@@ -22,6 +22,9 @@ int main()
 		flip(image, image, 1);
 		cvtColor(image, image_gray, COLOR_BGR2GRAY);
 		threshold(image_gray, result, 150, 255, THRESH_BINARY);
+		Moments m = moments(result, true);
+		Point p(m.m10 / m.m00, m.m01 / m.m00);
+		circle(result, p, 5, Scalar(128, 0, 0), -1);
 		imshow("Cam", result);
 		if (waitKey(1) >= 0) break;
 	}
