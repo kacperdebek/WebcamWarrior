@@ -7,7 +7,8 @@ int main()
 {
 	VideoCapture vcap;
 	Mat image;
-
+	Mat image_gray;
+	Mat result;
 	if (!vcap.open(0)) {
 		cout << "Error opening video stream or file" << endl;
 		return -1;
@@ -18,8 +19,9 @@ int main()
 			cout << "No frame" << endl;
 			waitKey();
 		}
-		
-		imshow("Cam", image);
+		cvtColor(image, image_gray, COLOR_BGR2GRAY);
+		threshold(image_gray, result, 150, 255, THRESH_BINARY);
+		imshow("Cam", result);
 		if (waitKey(1) >= 0) break;
 	}
 }
