@@ -19,6 +19,7 @@ int main()
 			cout << "No frame" << endl;
 			waitKey();
 		}
+		flip(image, image, 1);
 		cvtColor(image, image_gray, COLOR_BGR2GRAY);
 		threshold(image_gray, result, 150, 255, THRESH_BINARY);
 		imshow("Cam", result);
