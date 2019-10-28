@@ -1,12 +1,11 @@
-#include <SFML/Window.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/System/Clock.hpp>
-#include <iostream>
+#include "WebcamControl.hpp"
 #define SPAWN_DELAY 3
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(640, 480), "Strzelnica");
+    WebcamControl webcamThread;
+    sf::Thread thread(&WebcamControl::run, &webcamThread);
+    thread.launch();
     sf::CircleShape target;
     target.setRadius(30);
     target.setFillColor(sf::Color::Red);
@@ -19,16 +18,19 @@ int main()
     while (window.isOpen())
     {
         sf::Event event;
-        while (window.pollEvent(event)) {
+        while (window.pollEvent(event))
+        {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        if (dt <= sf::seconds(SPAWN_DELAY)) {
- 
+        if (dt <= sf::seconds(SPAWN_DELAY))
+        {
+
             window.clear();
             window.draw(target);
         }
-        else {
+        else
+        {
             randX = rand() % 540 + 50;
             randY = rand() % 360 + 50;
             target.setPosition(randX, randY);
