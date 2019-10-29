@@ -9,10 +9,12 @@ int main()
     sf::CircleShape target;
     sf::CircleShape aim;
     target.setRadius(30);
-    target.setFillColor(sf::Color::Blue);
+    target.setFillColor(sf::Color::Red);
     target.setOrigin(target.getRadius(), target.getRadius());
+	target.setOutlineColor(sf::Color::Red);
+	target.setOutlineThickness(5);
     aim.setRadius(10);
-    aim.setFillColor(sf::Color::Red);
+    aim.setFillColor(sf::Color::Blue);
     aim.setOrigin(aim.getRadius(), aim.getRadius());
     sf::Clock deltaClock;
     sf::Time dt;
@@ -35,6 +37,7 @@ int main()
                         if (!targetShot) {
                             targetShot = true;
                             cout << "Bullseye!" << endl;
+							target.setOutlineColor(sf::Color::Green);
                             dt = sf::seconds(9.5);
                         }
                     }
@@ -61,6 +64,7 @@ int main()
         else
         {
             targetShot = false;
+			target.setOutlineColor(sf::Color::Red);
             randX = rand() % 540 + 50;
             randY = rand() % 360 + 50;
             target.setPosition(randX, randY);
