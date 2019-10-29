@@ -1,0 +1,1 @@
+Trzeba wrzucić pliki z tego folderu do folderu z .exe
