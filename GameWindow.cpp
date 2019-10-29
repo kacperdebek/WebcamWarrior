@@ -1,5 +1,19 @@
 #include "WebcamControl.hpp"
 #define SPAWN_DELAY 10
+void initializeText(sf::Text& text, sf::Font& font, int textSize, int xPosition, int yPosition, const String& label, const sf::Color& color)
+{
+	text.setFont(font);
+	text.setString(label);
+	text.setCharacterSize(textSize);
+	text.setFillColor(color);
+	text.setPosition(yPosition, xPosition);
+}
+void initializeCircle(sf::CircleShape& circle, int radius, const sf::Color& color)
+{
+	circle.setRadius(radius);
+	circle.setFillColor(color);
+	circle.setOrigin(circle.getRadius(), circle.getRadius());
+}
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(640, 480), "Strzelnica");
@@ -14,15 +28,8 @@ int main()
         return -1;
     }
     int points = 0;
-    pointTotal.setFont(font);
-    pointTotal.setCharacterSize(18);
-    pointTotal.setFillColor(sf::Color::White);
-    pointTotal.setPosition(5, 460);
-    gunpointNotFound.setFont(font);
-    gunpointNotFound.setString("CANNOT LOCATE CONTROLLER");
-    gunpointNotFound.setCharacterSize(26);
-    gunpointNotFound.setFillColor(sf::Color::Yellow);
-    gunpointNotFound.setPosition(130, 210);
+	initializeText(pointTotal, font, 18, 460, 5, "Points: " + to_string(points), sf::Color::White);
+	initializeText(gunpointNotFound, font, 26, 210, 130, "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
     sf::SoundBuffer buffer;
     if (!buffer.loadFromFile("Pop.wav")){
         cout << "Couldn't load the sound file" << endl;
@@ -32,14 +39,10 @@ int main()
     popSound.setBuffer(buffer);
     sf::CircleShape target;
     sf::CircleShape aim;
-    target.setRadius(30);
-    target.setFillColor(sf::Color::Red);
-    target.setOrigin(target.getRadius(), target.getRadius());
+	initializeCircle(target, 30, sf::Color::Red);
+	initializeCircle(aim, 10, sf::Color::Blue);
     target.setOutlineColor(sf::Color::Red);
     target.setOutlineThickness(5);
-    aim.setRadius(10);
-    aim.setFillColor(sf::Color::Blue);
-    aim.setOrigin(aim.getRadius(), aim.getRadius());
     sf::Clock deltaClock;
     sf::Time dt;
     bool spacePressed = false;
