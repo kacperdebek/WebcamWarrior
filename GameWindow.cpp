@@ -7,6 +7,7 @@ int main()
     sf::Thread thread(&WebcamControl::run, &webcamThread);
     thread.launch();
     sf::Text pointTotal;
+    sf::Text gunpointNotFound;
     sf::Font font;
     if (!font.loadFromFile("Arial.ttf")) {
         cout << "Couldn't load the font" << endl;
@@ -17,6 +18,11 @@ int main()
     pointTotal.setCharacterSize(18);
     pointTotal.setFillColor(sf::Color::White);
     pointTotal.setPosition(5, 460);
+    gunpointNotFound.setFont(font);
+    gunpointNotFound.setString("CANNOT LOCATE CONTROLLER");
+    gunpointNotFound.setCharacterSize(26);
+    gunpointNotFound.setFillColor(sf::Color::Yellow);
+    gunpointNotFound.setPosition(130, 210);
     sf::SoundBuffer buffer;
     if (!buffer.loadFromFile("Pop.wav")){
         cout << "Couldn't load the sound file" << endl;
@@ -82,7 +88,12 @@ int main()
             pointTotal.setString("Points: " + to_string(points));
             window.draw(pointTotal);
             window.draw(target);
-            window.draw(aim);
+            if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
+                window.draw(gunpointNotFound);
+            }
+            else {
+                window.draw(aim);
+            }
         }
         else
         {
