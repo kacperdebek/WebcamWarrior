@@ -6,6 +6,11 @@ int main()
     WebcamControl webcamThread;
     sf::Thread thread(&WebcamControl::run, &webcamThread);
     thread.launch();
+	sf::SoundBuffer buffer;
+	if (!buffer.loadFromFile("Pop.wav"))
+		return -1;
+	sf::Sound popSound;
+	popSound.setBuffer(buffer);
     sf::CircleShape target;
     sf::CircleShape aim;
     target.setRadius(30);
@@ -36,6 +41,7 @@ int main()
                         spacePressed = true;
                         if (!targetShot) {
                             targetShot = true;
+							popSound.play();
                             cout << "Bullseye!" << endl;
 							target.setOutlineColor(sf::Color::Green);
                             dt = sf::seconds(9.5);
