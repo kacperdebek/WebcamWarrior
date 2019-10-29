@@ -6,18 +6,31 @@ int main()
     WebcamControl webcamThread;
     sf::Thread thread(&WebcamControl::run, &webcamThread);
     thread.launch();
-	sf::SoundBuffer buffer;
-	if (!buffer.loadFromFile("Pop.wav"))
-		return -1;
-	sf::Sound popSound;
-	popSound.setBuffer(buffer);
+    sf::Text pointTotal;
+    sf::Font font;
+    if (!font.loadFromFile("Arial.ttf")) {
+        cout << "Couldn't load the font" << endl;
+        return -1;
+    }
+    int points = 0;
+    pointTotal.setFont(font);
+    pointTotal.setCharacterSize(18);
+    pointTotal.setFillColor(sf::Color::White);
+    pointTotal.setPosition(5, 460);
+    sf::SoundBuffer buffer;
+    if (!buffer.loadFromFile("Pop.wav")){
+        cout << "Couldn't load the sound file" << endl;
+        return -1;
+    }
+    sf::Sound popSound;
+    popSound.setBuffer(buffer);
     sf::CircleShape target;
     sf::CircleShape aim;
     target.setRadius(30);
     target.setFillColor(sf::Color::Red);
     target.setOrigin(target.getRadius(), target.getRadius());
-	target.setOutlineColor(sf::Color::Red);
-	target.setOutlineThickness(5);
+    target.setOutlineColor(sf::Color::Red);
+    target.setOutlineThickness(5);
     aim.setRadius(10);
     aim.setFillColor(sf::Color::Blue);
     aim.setOrigin(aim.getRadius(), aim.getRadius());
@@ -41,9 +54,10 @@ int main()
                         spacePressed = true;
                         if (!targetShot) {
                             targetShot = true;
-							popSound.play();
+                            popSound.play();
                             cout << "Bullseye!" << endl;
-							target.setOutlineColor(sf::Color::Green);
+                            points += 10;
+                            target.setOutlineColor(sf::Color::Green);
                             dt = sf::seconds(9.5);
                         }
                     }
@@ -51,6 +65,7 @@ int main()
                     {
                         spacePressed = true;
                         cout << "Miss!" << endl;
+                        points -= 1;
                     }
                 }
             }
@@ -64,13 +79,15 @@ int main()
         if (dt <= sf::seconds(SPAWN_DELAY))
         {
             window.clear();
+            pointTotal.setString("Points: " + to_string(points));
+            window.draw(pointTotal);
             window.draw(target);
             window.draw(aim);
         }
         else
         {
             targetShot = false;
-			target.setOutlineColor(sf::Color::Red);
+            target.setOutlineColor(sf::Color::Red);
             randX = rand() % 540 + 50;
             randY = rand() % 360 + 50;
             target.setPosition(randX, randY);
