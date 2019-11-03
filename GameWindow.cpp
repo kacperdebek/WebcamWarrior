@@ -84,6 +84,10 @@ int main()
                         points -= 1;
                     }
                 }
+				else if (event.key.code == sf::Keyboard::Escape && playPressed)
+				{
+					playPressed = false;
+				}
             }
             if (event.type == sf::Event::KeyReleased) {
                 if (event.key.code == sf::Keyboard::Space && playPressed) {
@@ -93,7 +97,7 @@ int main()
 					menu.MoveUp();
 				else if (event.key.code == sf::Keyboard::Down)
 					menu.MoveDown();
-				else if (event.key.code == sf::Keyboard::Enter)
+				else if (event.key.code == sf::Keyboard::Enter && !playPressed)
 				{
 					switch (menu.GetPressedItem())
 					{
