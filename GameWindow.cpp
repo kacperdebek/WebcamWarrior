@@ -1,5 +1,8 @@
 #include "WebcamControl.hpp"
+#include "SpawnTrack.h"
+
 #define SPAWN_DELAY 10
+
 void initializeText(sf::Text& text, sf::Font& font, int textSize, int xPosition, int yPosition, const String& label, const sf::Color& color)
 {
 	text.setFont(font);
@@ -16,17 +19,36 @@ void initializeCircle(sf::CircleShape& circle, int radius, const sf::Color& colo
 }
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(640, 480), "Strzelnica");
+    sf::RenderWindow window(sf::VideoMode(1280, 720), "Strzelnica");
     WebcamControl webcamThread;
     sf::Thread thread(&WebcamControl::run, &webcamThread);
     thread.launch();
+
     sf::Text pointTotal;
     sf::Text gunpointNotFound;
     sf::Font font;
+	sf::Texture backgroundTexture;
+	sf::Sprite backgroundSprite;
+
+	// Game logic setup
+	SpawnTrack spawnTracks[5];
+	int positioner = 592;
+	for (int i = 0; i < 5; i++) {
+		spawnTracks[i] = SpawnTrack(positioner);
+		positioner -= 128;
+	}
+
     if (!font.loadFromFile("Arial.ttf")) {
         cout << "Couldn't load the font" << endl;
         return -1;
     }
+	if (!backgroundTexture.loadFromFile("background.jpg")) {
+		cout << "Couldn't load the background image" << endl;
+		return -1;
+	}
+
+	backgroundSprite.setTexture(backgroundTexture);
+
     int points = 0;
 	initializeText(pointTotal, font, 18, 460, 5, "Points: " + to_string(points), sf::Color::White);
 	initializeText(gunpointNotFound, font, 26, 210, 130, "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
@@ -89,6 +111,7 @@ int main()
         {
             window.clear();
             pointTotal.setString("Points: " + to_string(points));
+			window.draw(backgroundSprite);
             window.draw(pointTotal);
             window.draw(target);
             if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
@@ -107,7 +130,14 @@ int main()
             target.setPosition(randX, randY);
             dt = sf::seconds(0);
         }
+		// Game objects display
+		for (int i = 0; i < 5; i++) {
+			spawnTracks[i].update();
+			spawnTracks[i].draw(window);
+		}
+
         dt += deltaClock.restart();
+
         window.display();
     }
     return 0;
