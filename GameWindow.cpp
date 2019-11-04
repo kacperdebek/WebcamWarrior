@@ -3,6 +3,9 @@
 
 #define SPAWN_DELAY 10
 
+#include <iostream>
+#include "Menu.hpp"
+#define SPAWN_DELAY 3
 void initializeText(sf::Text& text, sf::Font& font, int textSize, int xPosition, int yPosition, const String& label, const sf::Color& color)
 {
 	text.setFont(font);
@@ -65,22 +68,27 @@ int main()
 	initializeCircle(aim, 10, sf::Color::Blue);
     target.setOutlineColor(sf::Color::Red);
     target.setOutlineThickness(5);
-    sf::Clock deltaClock;
+    
     sf::Time dt;
     bool spacePressed = false;
     bool targetShot = false;
+	bool playPressed = false;
     int randX = rand() % 540 + 50;
     int randY = rand() % 360 + 50;
     target.setPosition(randX, randY);
+	Menu menu(640, 480);
+	sf::Clock deltaClock;
+	static std::once_flag onceFlag;
     while (window.isOpen())
     {
+		
         sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 window.close();
             if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Space) {
+                if (event.key.code == sf::Keyboard::Space && playPressed) {
                     if ((abs(randX - webcamThread.getX()) < 30) && (abs(randY - webcamThread.getY()) < 30) && !spacePressed) {
                         spacePressed = true;
                         if (!targetShot) {
@@ -92,18 +100,43 @@ int main()
                             dt = sf::seconds(9.5);
                         }
                     }
-                    else if (!spacePressed)
+                    else if (!spacePressed && playPressed)
                     {
                         spacePressed = true;
                         cout << "Miss!" << endl;
                         points -= 1;
                     }
                 }
+				else if (event.key.code == sf::Keyboard::Escape && playPressed)
+				{
+					playPressed = false;
+				}
             }
             if (event.type == sf::Event::KeyReleased) {
-                if (event.key.code == sf::Keyboard::Space) {
+                if (event.key.code == sf::Keyboard::Space && playPressed) {
                     spacePressed = false;
                 }
+				else if (event.key.code == sf::Keyboard::Up)
+					menu.MoveUp();
+				else if (event.key.code == sf::Keyboard::Down)
+					menu.MoveDown();
+				else if (event.key.code == sf::Keyboard::Enter && !playPressed)
+				{
+					switch (menu.GetPressedItem())
+					{
+						case 0:
+							std::cout << "Play button has been pressed" << std::endl;
+							playPressed = true;
+							break;
+						case 1:
+							std::cout << "Option button has been pressed" << std::endl;
+							break;
+						case 2:
+							thread.terminate();
+							window.close();
+							break;
+					}
+				}
             }
         }
         aim.setPosition(webcamThread.getX(), webcamThread.getY());
@@ -138,6 +171,42 @@ int main()
 
         dt += deltaClock.restart();
 
+		
+		if (playPressed)
+		{
+			std::call_once(onceFlag, [&] {deltaClock.restart();});
+			
+			aim.setPosition(webcamThread.getX(), webcamThread.getY());
+			if (dt <= sf::seconds(SPAWN_DELAY))
+			{
+				window.clear();
+
+				pointTotal.setString("Points: " + to_string(points));
+				window.draw(pointTotal);
+				window.draw(target);
+				if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
+					window.draw(gunpointNotFound);
+				}
+				else {
+					window.draw(aim);
+				}
+			}
+			else
+			{
+				targetShot = false;
+				target.setOutlineColor(sf::Color::Red);
+				randX = rand() % 540 + 50;
+				randY = rand() % 360 + 50;
+				target.setPosition(randX, randY);
+				dt = sf::seconds(0);
+			}
+			dt += deltaClock.restart();
+		}
+		else
+		{
+			window.clear();
+			menu.draw(window);
+		}
         window.display();
     }
     return 0;
