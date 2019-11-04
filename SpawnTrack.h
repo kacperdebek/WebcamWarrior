@@ -6,10 +6,10 @@ class SpawnTrack
 private:
 	int baseline;
 	int speed;
-	SpawnSocket sockets[8];
+	SpawnSocket sockets[10];
 public:
 	SpawnTrack();
-	SpawnTrack(int);
+	SpawnTrack(int, int, int);
 	void update();
 	void draw(sf::RenderWindow&);
 };

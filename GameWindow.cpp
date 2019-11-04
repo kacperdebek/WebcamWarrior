@@ -6,6 +6,11 @@
 #include <iostream>
 #include "Menu.hpp"
 #define SPAWN_DELAY 3
+
+void displayBackgroundAndUI(sf::RenderWindow &window) {
+
+}
+
 void initializeText(sf::Text& text, sf::Font& font, int textSize, int xPosition, int yPosition, const String& label, const sf::Color& color)
 {
 	text.setFont(font);
@@ -22,6 +27,7 @@ void initializeCircle(sf::CircleShape& circle, int radius, const sf::Color& colo
 }
 int main()
 {
+	srand(time(NULL));
     sf::RenderWindow window(sf::VideoMode(1280, 720), "Strzelnica");
     WebcamControl webcamThread;
     sf::Thread thread(&WebcamControl::run, &webcamThread);
@@ -37,7 +43,9 @@ int main()
 	SpawnTrack spawnTracks[5];
 	int positioner = 592;
 	for (int i = 0; i < 5; i++) {
-		spawnTracks[i] = SpawnTrack(positioner);
+		spawnTracks[i] = SpawnTrack(positioner,
+			rand() % 3 + 1,
+			rand() % 250);
 		positioner -= 128;
 	}
 
@@ -163,15 +171,7 @@ int main()
             target.setPosition(randX, randY);
             dt = sf::seconds(0);
         }
-		// Game objects display
-		for (int i = 0; i < 5; i++) {
-			spawnTracks[i].update();
-			spawnTracks[i].draw(window);
-		}
 
-        dt += deltaClock.restart();
-
-		
 		if (playPressed)
 		{
 			std::call_once(onceFlag, [&] {deltaClock.restart();});
@@ -182,6 +182,7 @@ int main()
 				window.clear();
 
 				pointTotal.setString("Points: " + to_string(points));
+				window.draw(backgroundSprite);
 				window.draw(pointTotal);
 				window.draw(target);
 				if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
@@ -200,13 +201,22 @@ int main()
 				target.setPosition(randX, randY);
 				dt = sf::seconds(0);
 			}
+
+			// Game objects display
+			for (int i = 0; i < 5; i++) {
+				spawnTracks[i].update();
+				spawnTracks[i].draw(window);
+			}
+
 			dt += deltaClock.restart();
+
 		}
 		else
 		{
 			window.clear();
 			menu.draw(window);
 		}
+
         window.display();
     }
     return 0;

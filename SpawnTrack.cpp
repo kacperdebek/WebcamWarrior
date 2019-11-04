@@ -3,32 +3,31 @@
 SpawnTrack::SpawnTrack() {
 	this->speed = 0;
 	this->baseline = 0;
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 10; i++) {
 		this->sockets[i] = SpawnSocket();
 	}
 }
 
-SpawnTrack::SpawnTrack(int startY) {
-	srand(time(NULL));
-	this->speed = 1 + rand() % 6;
+SpawnTrack::SpawnTrack(int startY, int speed, int shift) {
+	this->speed = speed;
 	this->baseline = startY;
 	cout << "Spawn track speed and baseline coord:" << this->speed << this->baseline << "\n";
 
-	int positioner = 0;
-	for (int i = 0; i < 8; i++) {
+	int positioner = -1800 - shift;
+	for (int i = 0; i < 10; i++) {
 		this->sockets[i] = SpawnSocket(this->baseline, this->speed, positioner);
 		positioner += 158;
 	}
 }
 
 void SpawnTrack::update() {
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 10; i++) {
 		this->sockets[i].update();
 	}
 }
 
 void SpawnTrack::draw(sf::RenderWindow& window) {
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 10; i++) {
 		this->sockets[i].draw(window);
 	}
 }
