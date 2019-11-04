@@ -7,8 +7,23 @@
 #include "Menu.hpp"
 #define SPAWN_DELAY 3
 
-void displayBackgroundAndUI(sf::RenderWindow &window) {
+void displayBackgroundAndUI(sf::RenderWindow &window,
+	sf::Sprite& backgroundSprite,
+	sf::Text& pointTotal,
+	sf::CircleShape& target,
+	int points) {
+	window.clear();
+	pointTotal.setString("Points: " + to_string(points));
+	window.draw(backgroundSprite);
+	window.draw(pointTotal);
+	window.draw(target);
+}
 
+void displayGameObjects(sf::RenderWindow& window, SpawnTrack (&spawnTracks)[5]) {
+	for (int i = 0; i < 5; i++) {
+		spawnTracks[i].update();
+		spawnTracks[i].draw(window);
+	}
 }
 
 void initializeText(sf::Text& text, sf::Font& font, int textSize, int xPosition, int yPosition, const String& label, const sf::Color& color)
@@ -150,11 +165,9 @@ int main()
         aim.setPosition(webcamThread.getX(), webcamThread.getY());
         if (dt <= sf::seconds(SPAWN_DELAY))
         {
-            window.clear();
-            pointTotal.setString("Points: " + to_string(points));
-			window.draw(backgroundSprite);
-            window.draw(pointTotal);
-            window.draw(target);
+			displayBackgroundAndUI(window, backgroundSprite, pointTotal, target, points);
+			displayGameObjects(window, spawnTracks);
+
             if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
                 window.draw(gunpointNotFound);
             }
@@ -179,12 +192,9 @@ int main()
 			aim.setPosition(webcamThread.getX(), webcamThread.getY());
 			if (dt <= sf::seconds(SPAWN_DELAY))
 			{
-				window.clear();
+				displayBackgroundAndUI(window, backgroundSprite, pointTotal, target, points);
+				displayGameObjects(window, spawnTracks);
 
-				pointTotal.setString("Points: " + to_string(points));
-				window.draw(backgroundSprite);
-				window.draw(pointTotal);
-				window.draw(target);
 				if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
 					window.draw(gunpointNotFound);
 				}
@@ -200,12 +210,6 @@ int main()
 				randY = rand() % 360 + 50;
 				target.setPosition(randX, randY);
 				dt = sf::seconds(0);
-			}
-
-			// Game objects display
-			for (int i = 0; i < 5; i++) {
-				spawnTracks[i].update();
-				spawnTracks[i].draw(window);
 			}
 
 			dt += deltaClock.restart();
