@@ -1,9 +1,6 @@
 #include "WebcamControl.hpp"
 #include "SpawnTrack.h"
 #include "Monster.h"
-
-#define SPAWN_DELAY 10
-
 #include <iostream>
 #include "Menu.hpp"
 #define SPAWN_DELAY 10
@@ -14,13 +11,11 @@
 void displayBackgroundAndUI(sf::RenderWindow &window,
 	sf::Sprite& backgroundSprite,
 	sf::Text& pointTotal,
-	sf::CircleShape& target,
 	int points) {
 	window.clear();
 	pointTotal.setString("Points: " + to_string(points));
 	window.draw(backgroundSprite);
 	window.draw(pointTotal);
-	window.draw(target);
 }
 
 void displayGameObjects(sf::RenderWindow& window, SpawnTrack (&spawnTracks)[5]) {
@@ -48,12 +43,6 @@ void initializeText(sf::Text& text, sf::Font& font, int textSize, int xPosition,
 	text.setCharacterSize(textSize);
 	text.setFillColor(color);
 	text.setPosition(yPosition, xPosition);
-}
-void initializeCircle(sf::CircleShape& circle, int radius, const sf::Color& color)
-{
-	circle.setRadius(radius);
-	circle.setFillColor(color);
-	circle.setOrigin(circle.getRadius(), circle.getRadius());
 }
 int main()
 {
@@ -134,23 +123,13 @@ int main()
     }
     sf::Sound popSound;
     popSound.setBuffer(buffer);
-
-    sf::CircleShape target;
-	initializeCircle(target, 30, sf::Color::Red);
-    target.setOutlineColor(sf::Color::Red);
-    target.setOutlineThickness(5);
     
     sf::Time dt;
     bool spacePressed = false;
-    bool targetShot = false;
 	bool playPressed = false;
-	int randX = rand() % (WINDOW_WIDTH - 90) + 50;
-	int randY = rand() % (WINDOW_HEIGHT - 145) + 110;
 
-    target.setPosition(randX, randY);
 	Menu menu(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	sf::Clock deltaClock;
 	static std::once_flag onceFlag;
     while (window.isOpen())
     {
@@ -163,14 +142,9 @@ int main()
                 if (event.key.code == sf::Keyboard::Space && playPressed) {
                     if (checkForCollisions(spawnTracks, webcamThread) && !spacePressed) {
                         spacePressed = true;
-                        if (!targetShot) {
-                            targetShot = true;
-                            popSound.play();
-                            cout << "Bullseye!" << endl;
-                            points += 10;
-                            target.setOutlineColor(sf::Color::Green);
-                            dt = sf::seconds(SPAWN_DELAY - 0.5);
-                        }
+                        popSound.play();
+                        cout << "Bullseye!" << endl;
+                        points += 10;
                     }
                     else if (!spacePressed && playPressed)
                     {
@@ -211,57 +185,18 @@ int main()
 				}
             }
         }
-        aimSprite.setPosition(webcamThread.getX(), webcamThread.getY());
-        if (dt <= sf::seconds(SPAWN_DELAY))
-        {
-			displayBackgroundAndUI(window, backgroundSprite, pointTotal, target, points);
-			displayGameObjects(window, spawnTracks);
-
-            if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
-                window.draw(gunpointNotFound);
-            }
-            else {
-                window.draw(aimSprite);
-            }
-        }
-        else
-        {
-            targetShot = false;
-            target.setOutlineColor(sf::Color::Red);
-            randX = rand() % 540 + 50;
-            randY = rand() % 360 + 50;
-            target.setPosition(randX, randY);
-            dt = sf::seconds(0);
-        }
-
 		if (playPressed)
 		{
-			std::call_once(onceFlag, [&] {deltaClock.restart();});
-			
 			aimSprite.setPosition(webcamThread.getX(), webcamThread.getY());
-			if (dt <= sf::seconds(SPAWN_DELAY))
-			{
-				displayBackgroundAndUI(window, backgroundSprite, pointTotal, target, points);
-				displayGameObjects(window, spawnTracks);
+			displayBackgroundAndUI(window, backgroundSprite, pointTotal, points);
+			displayGameObjects(window, spawnTracks);
 
-				if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
-					window.draw(gunpointNotFound);
-				}
-				else {
-					window.draw(aimSprite);
-				}
+			if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
+				window.draw(gunpointNotFound);
 			}
-			else
-			{
-				targetShot = false;
-				target.setOutlineColor(sf::Color::Red);
-				randX = rand() % (WINDOW_WIDTH - 90) + 50;
-				randY = rand() % (WINDOW_HEIGHT - 145) + 110;
-				target.setPosition(randX, randY);
-				dt = sf::seconds(0);
+			else {
+				window.draw(aimSprite);
 			}
-
-			dt += deltaClock.restart();
 		}
 		else
 		{
