@@ -1,11 +1,11 @@
 #include "WebcamControl.hpp"
 #include "SpawnTrack.h"
-
-#define SPAWN_DELAY 10
-
 #include <iostream>
 #include "Menu.hpp"
-#define SPAWN_DELAY 3
+#define SPAWN_DELAY 10
+#define WINDOW_HEIGHT 720
+#define WINDOW_WIDTH 1280
+
 
 void displayBackgroundAndUI(sf::RenderWindow &window,
 	sf::Sprite& backgroundSprite,
@@ -43,7 +43,8 @@ void initializeCircle(sf::CircleShape& circle, int radius, const sf::Color& colo
 int main()
 {
 	srand(time(NULL));
-    sf::RenderWindow window(sf::VideoMode(1280, 720), "Strzelnica");
+    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Strzelnica");
+
     WebcamControl webcamThread;
     sf::Thread thread(&WebcamControl::run, &webcamThread);
     thread.launch();
@@ -72,12 +73,12 @@ int main()
 		cout << "Couldn't load the background image" << endl;
 		return -1;
 	}
-
 	backgroundSprite.setTexture(backgroundTexture);
 
     int points = 0;
-	initializeText(pointTotal, font, 18, 460, 5, "Points: " + to_string(points), sf::Color::White);
-	initializeText(gunpointNotFound, font, 26, 210, 130, "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
+	initializeText(pointTotal, font, 18, WINDOW_HEIGHT - 30, 5, "Points: " + to_string(points), sf::Color::White);
+	initializeText(gunpointNotFound, font, 26, (WINDOW_HEIGHT / 2), (WINDOW_WIDTH / 3), "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
+
     sf::SoundBuffer buffer;
     if (!buffer.loadFromFile("Pop.wav")){
         cout << "Couldn't load the sound file" << endl;
@@ -85,6 +86,7 @@ int main()
     }
     sf::Sound popSound;
     popSound.setBuffer(buffer);
+
     sf::CircleShape target;
     sf::CircleShape aim;
 	initializeCircle(target, 30, sf::Color::Red);
@@ -96,15 +98,16 @@ int main()
     bool spacePressed = false;
     bool targetShot = false;
 	bool playPressed = false;
-    int randX = rand() % 540 + 50;
-    int randY = rand() % 360 + 50;
+	int randX = rand() % (WINDOW_WIDTH - 90) + 50;
+	int randY = rand() % (WINDOW_HEIGHT - 145) + 110;
+
     target.setPosition(randX, randY);
-	Menu menu(640, 480);
+	Menu menu(WINDOW_WIDTH, WINDOW_HEIGHT);
+
 	sf::Clock deltaClock;
 	static std::once_flag onceFlag;
     while (window.isOpen())
     {
-		
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -120,7 +123,7 @@ int main()
                             cout << "Bullseye!" << endl;
                             points += 10;
                             target.setOutlineColor(sf::Color::Green);
-                            dt = sf::seconds(9.5);
+                            dt = sf::seconds(SPAWN_DELAY - 0.5);
                         }
                     }
                     else if (!spacePressed && playPressed)
@@ -163,28 +166,6 @@ int main()
             }
         }
         aim.setPosition(webcamThread.getX(), webcamThread.getY());
-        if (dt <= sf::seconds(SPAWN_DELAY))
-        {
-			displayBackgroundAndUI(window, backgroundSprite, pointTotal, target, points);
-			displayGameObjects(window, spawnTracks);
-
-            if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
-                window.draw(gunpointNotFound);
-            }
-            else {
-                window.draw(aim);
-            }
-        }
-        else
-        {
-            targetShot = false;
-            target.setOutlineColor(sf::Color::Red);
-            randX = rand() % 540 + 50;
-            randY = rand() % 360 + 50;
-            target.setPosition(randX, randY);
-            dt = sf::seconds(0);
-        }
-
 		if (playPressed)
 		{
 			std::call_once(onceFlag, [&] {deltaClock.restart();});
@@ -206,21 +187,19 @@ int main()
 			{
 				targetShot = false;
 				target.setOutlineColor(sf::Color::Red);
-				randX = rand() % 540 + 50;
-				randY = rand() % 360 + 50;
+				randX = rand() % (WINDOW_WIDTH - 90) + 50;
+				randY = rand() % (WINDOW_HEIGHT - 145) + 110;
 				target.setPosition(randX, randY);
 				dt = sf::seconds(0);
 			}
 
 			dt += deltaClock.restart();
-
 		}
 		else
 		{
 			window.clear();
 			menu.draw(window);
 		}
-
         window.display();
     }
     return 0;
