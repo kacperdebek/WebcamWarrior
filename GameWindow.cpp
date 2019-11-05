@@ -1,5 +1,9 @@
 #include "WebcamControl.hpp"
 #include "SpawnTrack.h"
+#include "Monster.h"
+
+#define SPAWN_DELAY 10
+
 #include <iostream>
 #include "Menu.hpp"
 #define SPAWN_DELAY 10
@@ -26,6 +30,17 @@ void displayGameObjects(sf::RenderWindow& window, SpawnTrack (&spawnTracks)[5]) 
 	}
 }
 
+bool checkForCollisions(SpawnTrack tracks[5], WebcamControl& webcamThread) {
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 10; j++) {
+			if (tracks[i].sockets[j].checkCollision(webcamThread.getX(), webcamThread.getY(), 30)) {
+				cout << "Collision! " << tracks[i].sockets[j].checkCollision(webcamThread.getX(), webcamThread.getY(), 30);
+				return true;
+			}
+		}
+	}
+	return false;
+}
 void initializeText(sf::Text& text, sf::Font& font, int textSize, int xPosition, int yPosition, const String& label, const sf::Color& color)
 {
 	text.setFont(font);
@@ -44,7 +59,8 @@ int main()
 {
 	srand(time(NULL));
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Strzelnica");
-
+	window.setFramerateLimit(30);
+	
     WebcamControl webcamThread;
     sf::Thread thread(&WebcamControl::run, &webcamThread);
     thread.launch();
@@ -52,19 +68,25 @@ int main()
     sf::Text pointTotal;
     sf::Text gunpointNotFound;
     sf::Font font;
+
 	sf::Texture backgroundTexture;
+	sf::Texture aimTexture;
+	sf::Texture monsterTexture;
 	sf::Sprite backgroundSprite;
+	sf::Sprite aimSprite;
+	sf::Sprite monsterSprite;
 
 	// Game logic setup
 	SpawnTrack spawnTracks[5];
 	int positioner = 592;
 	for (int i = 0; i < 5; i++) {
 		spawnTracks[i] = SpawnTrack(positioner,
-			rand() % 3 + 1,
+			rand() % 2 + 1,
 			rand() % 250);
 		positioner -= 128;
 	}
 
+	// Graphics setup
     if (!font.loadFromFile("Arial.ttf")) {
         cout << "Couldn't load the font" << endl;
         return -1;
@@ -73,7 +95,33 @@ int main()
 		cout << "Couldn't load the background image" << endl;
 		return -1;
 	}
+	if (!aimTexture.loadFromFile("aim.png")) {
+		cout << "Couldn't load the aim texture" << endl;
+		return -1;
+	}
+	if (!monsterTexture.loadFromFile("testmonster.png")) {
+		cout << "Couldn't load the monster texture" << endl;
+		return -1;
+	}
+
 	backgroundSprite.setTexture(backgroundTexture);
+	aimSprite.setTexture(aimTexture);
+	monsterSprite.setTexture(monsterTexture);
+
+	// Game objects setup
+	Monster monsters[5];
+	for (int i = 0; i < 5; i++) {
+		monsters[i] = Monster(1, 10, 60, monsterSprite);
+		int limiter = 0;
+		while (!monsters[i].checkMount() && limiter < 3) {
+			SpawnSocket& helper = spawnTracks[rand() % 4].sockets[rand() % 9];
+			limiter++;
+			if (!helper.checkMount()) {
+				helper.mount(monsters[i]);
+				cout << "Monster mounted!\n";
+			}
+		}
+	}
 
     int points = 0;
 	initializeText(pointTotal, font, 18, WINDOW_HEIGHT - 30, 5, "Points: " + to_string(points), sf::Color::White);
@@ -88,9 +136,7 @@ int main()
     popSound.setBuffer(buffer);
 
     sf::CircleShape target;
-    sf::CircleShape aim;
 	initializeCircle(target, 30, sf::Color::Red);
-	initializeCircle(aim, 10, sf::Color::Blue);
     target.setOutlineColor(sf::Color::Red);
     target.setOutlineThickness(5);
     
@@ -115,7 +161,7 @@ int main()
                 window.close();
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Space && playPressed) {
-                    if ((abs(randX - webcamThread.getX()) < 30) && (abs(randY - webcamThread.getY()) < 30) && !spacePressed) {
+                    if (checkForCollisions(spawnTracks, webcamThread) && !spacePressed) {
                         spacePressed = true;
                         if (!targetShot) {
                             targetShot = true;
@@ -165,12 +211,34 @@ int main()
 				}
             }
         }
-        aim.setPosition(webcamThread.getX(), webcamThread.getY());
+        aimSprite.setPosition(webcamThread.getX(), webcamThread.getY());
+        if (dt <= sf::seconds(SPAWN_DELAY))
+        {
+			displayBackgroundAndUI(window, backgroundSprite, pointTotal, target, points);
+			displayGameObjects(window, spawnTracks);
+
+            if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
+                window.draw(gunpointNotFound);
+            }
+            else {
+                window.draw(aimSprite);
+            }
+        }
+        else
+        {
+            targetShot = false;
+            target.setOutlineColor(sf::Color::Red);
+            randX = rand() % 540 + 50;
+            randY = rand() % 360 + 50;
+            target.setPosition(randX, randY);
+            dt = sf::seconds(0);
+        }
+
 		if (playPressed)
 		{
 			std::call_once(onceFlag, [&] {deltaClock.restart();});
 			
-			aim.setPosition(webcamThread.getX(), webcamThread.getY());
+			aimSprite.setPosition(webcamThread.getX(), webcamThread.getY());
 			if (dt <= sf::seconds(SPAWN_DELAY))
 			{
 				displayBackgroundAndUI(window, backgroundSprite, pointTotal, target, points);
@@ -180,7 +248,7 @@ int main()
 					window.draw(gunpointNotFound);
 				}
 				else {
-					window.draw(aim);
+					window.draw(aimSprite);
 				}
 			}
 			else

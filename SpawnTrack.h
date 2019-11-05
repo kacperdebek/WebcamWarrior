@@ -6,8 +6,9 @@ class SpawnTrack
 private:
 	int baseline;
 	int speed;
-	SpawnSocket sockets[10];
 public:
+	SpawnSocket sockets[10];
+
 	SpawnTrack();
 	SpawnTrack(int, int, int);
 	void update();

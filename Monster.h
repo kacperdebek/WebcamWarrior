@@ -1,7 +1,7 @@
 #pragma once
-#include "SpawnSocket.h"
+#include "WebcamControl.hpp"
 
-class Entity
+class Monster
 {
 private:
 	int centerX;
@@ -10,17 +10,20 @@ private:
 	int cooldown;
 
 	bool isMounted;
-	SpawnSocket socket;
 
 	sf::Sprite sprite;
 	sf::RectangleShape border;
 	sf::CircleShape hitbox;
+
+	int health;
+	int pointsValue;
 public:
-	Entity();
-	Entity(int, sf::Sprite&);
+	Monster();
+	Monster(int, int, int, sf::Sprite&);
 	void updatePosition(int, int);
 	void drawHitbox(sf::RenderWindow&);
 	void draw(sf::RenderWindow&);
-	bool checkCollision(int, int, int);
+	void unmount();
+	bool checkMount();
+	int getHitboxRadius();
 };
-
