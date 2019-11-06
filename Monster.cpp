@@ -7,18 +7,11 @@ Monster::Monster() {
 Monster::Monster(int health, int points, int damage, int hitboxRadius, sf::Sprite& sprite){
 	this->totalHealth = health;
 	this->health = health;
-<<<<<<< HEAD
-	this->cooldown = 0;
-	this->isMounted = false;
-	this->hitboxRadius = hitboxRadius;
-	this->damage = damage;
-=======
 	this->damage = damage;
 	this->pointsValue = points;
 	this->cooldown = 0;
 	this->isMounted = false;
 	this->hitboxRadius = hitboxRadius;
->>>>>>> 6037490... Zmodyfikowano aktualizowanie punktacji oraz zdrowia w zaleznosci od parametrow trafionego obiektu
 
 	this->sprite = sprite;
 	this->hitbox = sf::CircleShape();

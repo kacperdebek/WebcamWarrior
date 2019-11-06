@@ -220,7 +220,7 @@ int main()
                     else if (!spacePressed && playPressed)
                     {
                         spacePressed = true;
-                        cout << "Miss!" << endl;
+                        cout << "Miss! " << webcamThread.getX() << ", " << webcamThread.getY() << endl;
                         points -= 1;
                     }
                 }
