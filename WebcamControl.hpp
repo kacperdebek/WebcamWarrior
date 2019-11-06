@@ -12,7 +12,8 @@
 #include <cstdlib>
 #include <cstdio>
 #include <ctime>
-
+#define SPAWN_TRACK_COUNT 5
+#define SPAWN_SOCKETS_PER_TRACK 10
 
 using namespace cv;
 using namespace std;

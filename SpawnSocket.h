@@ -21,4 +21,6 @@ class SpawnSocket
 		bool checkCollision(int, int, int);
 		bool isOutOfWindow();
 		Monster& getMonster();
+		int getPositionX();
+		int getBaseline();
 };

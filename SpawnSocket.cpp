@@ -90,5 +90,13 @@ bool SpawnSocket::checkCollision(int aimX, int aimY, int aimRadius) {
 }
 
 bool SpawnSocket::isOutOfWindow() {
-	return (this->positionX < -128);
+	return (this->positionX <= -128);
+}
+
+int SpawnSocket::getBaseline() {
+	return this->baseline;
+}
+
+int SpawnSocket::getPositionX() {
+	return this->positionX;
 }

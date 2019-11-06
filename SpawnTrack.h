@@ -7,7 +7,7 @@ private:
 	int baseline;
 	int speed;
 public:
-	SpawnSocket sockets[10];
+	SpawnSocket sockets[SPAWN_SOCKETS_PER_TRACK];
 
 	SpawnTrack();
 	SpawnTrack(int, int, int);

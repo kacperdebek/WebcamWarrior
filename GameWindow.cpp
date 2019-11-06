@@ -6,7 +6,7 @@
 #define SPAWN_DELAY 10
 #define WINDOW_HEIGHT 720
 #define WINDOW_WIDTH 1280
-
+#define MONSTER_COUNT 5
 
 void displayBackgroundAndUI(sf::RenderWindow &window,
 	sf::Sprite& backgroundSprite,
@@ -18,16 +18,16 @@ void displayBackgroundAndUI(sf::RenderWindow &window,
 	window.draw(pointTotal);
 }
 
-void displayGameObjects(sf::RenderWindow& window, SpawnTrack (&spawnTracks)[5]) {
-	for (int i = 0; i < 5; i++) {
+void displayGameObjects(sf::RenderWindow& window, SpawnTrack (&spawnTracks)[SPAWN_TRACK_COUNT]) {
+	for (int i = 0; i < SPAWN_TRACK_COUNT; i++) {
 		spawnTracks[i].update();
 		spawnTracks[i].draw(window);
 	}
 }
 
-bool checkForCollisions(SpawnTrack tracks[5], WebcamControl& webcamThread) {
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 10; j++) {
+bool checkForCollisions(SpawnTrack tracks[SPAWN_TRACK_COUNT], WebcamControl& webcamThread) {
+	for (int i = 0; i < SPAWN_TRACK_COUNT; i++) {
+		for (int j = 0; j < SPAWN_SOCKETS_PER_TRACK; j++) {
 			if (tracks[i].sockets[j].checkCollision(webcamThread.getX(), webcamThread.getY(), 30)) {
 				cout << "Collision! " << tracks[i].sockets[j].checkCollision(webcamThread.getX(), webcamThread.getY(), 30);
 				tracks[i].sockets[j].unmount();
@@ -38,14 +38,17 @@ bool checkForCollisions(SpawnTrack tracks[5], WebcamControl& webcamThread) {
 	return false;
 }
 
-void updateEntities(Monster monsters[5], SpawnTrack tracks[5]) {
-	for (int i = 0; i < 5; i++) {
-		if (!monsters[i].checkMount() && monsters[i].hasCooldown() > 0) {
+void updateEntities(Monster monsters[MONSTER_COUNT], SpawnTrack tracks[SPAWN_TRACK_COUNT]) {
+	for (int i = 0; i < MONSTER_COUNT; i++) {
+		if (!monsters[i].checkMount() || monsters[i].hasCooldown() > 0) {
 			cout << "Entered the loop: mounter | cd " << monsters[i].checkMount() << " " << monsters[i].hasCooldown() << "\n";
-			while (true) {
-				cout << "Checking sockets...";
-				SpawnSocket& helper = tracks[rand() % 4].sockets[rand() % 9];
+			int memoryLimiter = 0;
+			while (true && memoryLimiter < 4) {
+				memoryLimiter++;
+				SpawnSocket& helper = tracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
+				cout << "Socket position: " << helper.getPositionX() << " " << helper.getBaseline() << "\n";
 				if (!helper.checkMount() && helper.isOutOfWindow()) {
+					cout << "Spawn track free confirmed checkpoint\n";
 					helper.mount(monsters[i]);
 					cout << "Mount\n";
 					
@@ -68,7 +71,7 @@ int main()
 {
 	srand(time(NULL));
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Strzelnica");
-	window.setFramerateLimit(30);
+	window.setFramerateLimit(60);
 	
     WebcamControl webcamThread;
     sf::Thread thread(&WebcamControl::run, &webcamThread);
@@ -86,9 +89,9 @@ int main()
 	sf::Sprite monsterSprite;
 
 	// Game logic setup
-	SpawnTrack spawnTracks[5];
+	SpawnTrack spawnTracks[SPAWN_TRACK_COUNT];
 	int positioner = 592;
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < SPAWN_TRACK_COUNT; i++) {
 		spawnTracks[i] = SpawnTrack(positioner,
 			rand() % 2 + 1,
 			rand() % 250);
@@ -118,11 +121,11 @@ int main()
 	monsterSprite.setTexture(monsterTexture);
 
 	// Game objects setup
-	Monster monsters[5];
-	for (int i = 0; i < 5; i++) {
+	Monster monsters[MONSTER_COUNT];
+	for (int i = 0; i < MONSTER_COUNT; i++) {
 		monsters[i] = Monster(1, 10, 60, monsterSprite);
 		while (true) {
-			SpawnSocket& helper = spawnTracks[rand() % 4].sockets[rand() % 9];
+			SpawnSocket& helper = spawnTracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
 			if (!helper.checkMount() && helper.isOutOfWindow()) {
 				cout << "Monster mounted!\n";
 				helper.mount(monsters[i]);
@@ -132,7 +135,7 @@ int main()
 	}
 
     int points = 0;
-	initializeText(pointTotal, font, 18, WINDOW_HEIGHT - 30, 5, "Points: " + to_string(points), sf::Color::White);
+	initializeText(pointTotal, font, 18, 30, 5, "Points: " + to_string(points), sf::Color::White);
 	initializeText(gunpointNotFound, font, 26, (WINDOW_HEIGHT / 2), (WINDOW_WIDTH / 3), "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
 
     sf::SoundBuffer buffer;
