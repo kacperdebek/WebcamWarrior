@@ -202,8 +202,10 @@ int main()
     bool spacePressed = false;
 	bool playPressed = false;
 	bool optionsPressed = false;
-	Menu mainMenu(WINDOW_WIDTH, WINDOW_HEIGHT);
-	Menu optionsMenu(WINDOW_WIDTH, WINDOW_HEIGHT);
+	vector<string> mainMenuLabels = { "Play", "Options", "Exit"};
+	vector<string> optionsMenuLabels = { "Template"};
+	Menu mainMenu(WINDOW_WIDTH, WINDOW_HEIGHT, mainMenuLabels, sf::Color::White, sf::Color::Red);
+	Menu optionsMenu(WINDOW_WIDTH, WINDOW_HEIGHT, optionsMenuLabels, sf::Color::White, sf::Color::Red);
 	SliderSFML slider(WINDOW_WIDTH/3, WINDOW_HEIGHT/2);
 	slider.create(0, 255);
 	slider.setSliderValue(webcamThread.getThreshold());
@@ -240,11 +242,6 @@ int main()
 				{
 					optionsPressed = false;
 				}
-            }
-            if (event.type == sf::Event::KeyReleased) {
-                if (event.key.code == sf::Keyboard::Space && playPressed) {
-                    spacePressed = false;
-                }
 				else if (event.key.code == sf::Keyboard::Up)
 					mainMenu.MoveUp();
 				else if (event.key.code == sf::Keyboard::Down)
@@ -253,19 +250,24 @@ int main()
 				{
 					switch (mainMenu.GetPressedItem())
 					{
-						case 0:
-							//std::cout << "Play button has been pressed" << std::endl;
-							playPressed = true;
-							break;
-						case 1:
-							optionsPressed = true;
-							break;
-						case 2:
-							thread.terminate();
-							window.close();
-							break;
+					case 0:
+						//std::cout << "Play button has been pressed" << std::endl;
+						playPressed = true;
+						break;
+					case 1:
+						optionsPressed = true;
+						break;
+					case 2:
+						thread.terminate();
+						window.close();
+						break;
 					}
 				}
+            }
+            if (event.type == sf::Event::KeyReleased) {
+                if (event.key.code == sf::Keyboard::Space && playPressed) {
+                    spacePressed = false;
+                }
             }
         }
 		aimSprite.setPosition(webcamThread.getX(), webcamThread.getY());
