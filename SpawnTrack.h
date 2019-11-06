@@ -11,7 +11,7 @@ public:
 
 	SpawnTrack();
 	SpawnTrack(int, int, int);
-	void update();
+	void update(int&);
 	void draw(sf::RenderWindow&);
 };
 

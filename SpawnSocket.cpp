@@ -18,11 +18,12 @@ Monster& SpawnSocket::getMonster() {
 	return *(this->mountedMonster);
 }
 
-void SpawnSocket::update() {
+void SpawnSocket::update(int& playerHealth) {
 	this->positionX += speed;
-	if (this->positionX > 1430) {
+	if (this->positionX > 1290) {
 		this->positionX = -150;
 		if (this->isMounted && this->mountedMonster != NULL) {
+			playerHealth -= this->getMonster().getDamage();
 			this->unmount();
 		}
 	}
@@ -32,19 +33,10 @@ void SpawnSocket::update() {
 }
 
 void SpawnSocket::draw(sf::RenderWindow& window) {
-	//sf::RectangleShape rectangle;
-	//rectangle.setSize(sf::Vector2f(128, 128));
-	//rectangle.setOutlineColor(sf::Color::Red);
-	//rectangle.setOutlineThickness(5);
-	//rectangle.setPosition(this->positionX, this->baseline);
-
 	if (this->isMounted) {
 		//this->getMonster().drawHitbox(window);
 		this->getMonster().draw(window);
 	}
-	//else {
-	//	window.draw(rectangle);
-	//}
 }
 
 void SpawnSocket::mount(Monster& monster) {
@@ -54,8 +46,6 @@ void SpawnSocket::mount(Monster& monster) {
 }
 
 void SpawnSocket::unmount() {
-	cout << "Spawn socket unmount checkpoint\n";
-	cout << "Position of the socket: " << this->positionX << "\n";
 	this->getMonster().unmount();
 	this->mountedMonster = NULL;
 	this->isMounted = false;
@@ -65,22 +55,18 @@ bool SpawnSocket::checkMount() {
 	return this->isMounted;
 }
 
+void SpawnSocket::registerShot() {
+	if (this->getMonster().handleShot()) this->unmount();
+}
+
 bool SpawnSocket::checkCollision(int aimX, int aimY, int aimRadius) {
 	if (this->isMounted) {
 		if (this->positionX == aimX) {
-			cout << "Coords monster: " << this->positionX << ", " << this->baseline << "\n";
-			cout << "Coords aim: " << aimX << ", " << aimY << "\n";
 			return (abs(this->baseline + aimY) <= aimRadius + this->getMonster().getHitboxRadius());
 		}
 		if (this->baseline == aimY) {
-			cout << "Coords monster: " << this->positionX << ", " << this->baseline << "\n";
-			cout << "Coords aim: " << aimX << ", " << aimY << "\n";
 			return (abs(this->positionX + aimX) <= aimRadius + this->getMonster().getHitboxRadius());
 		}
-
-		cout << "Coords monster: " << this->positionX << ", " << this->baseline << "\n";
-		cout << "Coords aim: " << aimX << ", " << aimY << "\n";
-		cout << "Estimated distance: " << sqrt(pow(abs(aimX - this->positionX), 2) + pow(abs(aimY - this->baseline), 2)) << "\n";
 
 		if (sqrt(pow(abs(aimX - this->positionX), 2) + pow(abs(aimY - this->baseline), 2)) <= aimRadius + this->getMonster().getHitboxRadius()) {
 			return true;

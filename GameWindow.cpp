@@ -7,20 +7,25 @@
 #define WINDOW_HEIGHT 720
 #define WINDOW_WIDTH 1280
 #define MONSTER_COUNT 5
+#define SUPERMONSTER_COUNT 2
 
 void displayBackgroundAndUI(sf::RenderWindow &window,
 	sf::Sprite& backgroundSprite,
 	sf::Text& pointTotal,
-	int points) {
+	sf::Text& healthDisplay,
+	int points,
+	int health) {
 	window.clear();
-	pointTotal.setString("Points: " + to_string(points));
+	pointTotal.setString("POINTS: " + to_string(points));
+	healthDisplay.setString("HEALTH: " + to_string(health));
 	window.draw(backgroundSprite);
 	window.draw(pointTotal);
+	window.draw(healthDisplay);
 }
 
-void displayGameObjects(sf::RenderWindow& window, SpawnTrack (&spawnTracks)[SPAWN_TRACK_COUNT]) {
+void displayGameObjects(sf::RenderWindow& window, SpawnTrack (&spawnTracks)[SPAWN_TRACK_COUNT], int& health) {
 	for (int i = 0; i < SPAWN_TRACK_COUNT; i++) {
-		spawnTracks[i].update();
+		spawnTracks[i].update(health);
 		spawnTracks[i].draw(window);
 	}
 }
@@ -29,8 +34,7 @@ bool checkForCollisions(SpawnTrack tracks[SPAWN_TRACK_COUNT], WebcamControl& web
 	for (int i = 0; i < SPAWN_TRACK_COUNT; i++) {
 		for (int j = 0; j < SPAWN_SOCKETS_PER_TRACK; j++) {
 			if (tracks[i].sockets[j].checkCollision(webcamThread.getX(), webcamThread.getY(), 30)) {
-				cout << "Collision! " << tracks[i].sockets[j].checkCollision(webcamThread.getX(), webcamThread.getY(), 30);
-				tracks[i].sockets[j].unmount();
+				tracks[i].sockets[j].registerShot();
 				return true;
 			}
 		}
@@ -38,20 +42,31 @@ bool checkForCollisions(SpawnTrack tracks[SPAWN_TRACK_COUNT], WebcamControl& web
 	return false;
 }
 
-void updateEntities(Monster monsters[MONSTER_COUNT], SpawnTrack tracks[SPAWN_TRACK_COUNT]) {
+void updateEntities(Monster monsters[MONSTER_COUNT], Monster supermonsters[SUPERMONSTER_COUNT], SpawnTrack tracks[SPAWN_TRACK_COUNT]) {
 	for (int i = 0; i < MONSTER_COUNT; i++) {
 		if (!monsters[i].checkMount() || monsters[i].hasCooldown() > 0) {
-			cout << "Entered the loop: mounter | cd " << monsters[i].checkMount() << " " << monsters[i].hasCooldown() << "\n";
 			int memoryLimiter = 0;
 			while (true && memoryLimiter < 4) {
 				memoryLimiter++;
 				SpawnSocket& helper = tracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
-				cout << "Socket position: " << helper.getPositionX() << " " << helper.getBaseline() << "\n";
 				if (!helper.checkMount() && helper.isOutOfWindow()) {
-					cout << "Spawn track free confirmed checkpoint\n";
 					helper.mount(monsters[i]);
-					cout << "Mount\n";
 					
+					break;
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < SUPERMONSTER_COUNT; i++) {
+		if (!supermonsters[i].checkMount() || supermonsters[i].hasCooldown() > 0) {
+			int memoryLimiter = 0;
+			while (true && memoryLimiter < 4) {
+				memoryLimiter++;
+				SpawnSocket& helper = tracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
+				if (!helper.checkMount() && helper.isOutOfWindow()) {
+					helper.mount(supermonsters[i]);
+
 					break;
 				}
 			}
@@ -78,17 +93,24 @@ int main()
     thread.launch();
 
     sf::Text pointTotal;
+	sf::Text healthDisplay;
     sf::Text gunpointNotFound;
     sf::Font font;
 
 	sf::Texture backgroundTexture;
 	sf::Texture aimTexture;
 	sf::Texture monsterTexture;
+	sf::Texture supermonsterTexture;
+
 	sf::Sprite backgroundSprite;
 	sf::Sprite aimSprite;
 	sf::Sprite monsterSprite;
+	sf::Sprite supermonsterSprite;
 
 	// Game logic setup
+	int playerHealth = 100;
+	int points = 0;
+
 	SpawnTrack spawnTracks[SPAWN_TRACK_COUNT];
 	int positioner = 592;
 	for (int i = 0; i < SPAWN_TRACK_COUNT; i++) {
@@ -115,15 +137,26 @@ int main()
 		cout << "Couldn't load the monster texture" << endl;
 		return -1;
 	}
+	if (!supermonsterTexture.loadFromFile("supermonster.png")) {
+		cout << "Couldn't load the super monster texture" << endl;
+		return -1;
+	}
 
 	backgroundSprite.setTexture(backgroundTexture);
 	aimSprite.setTexture(aimTexture);
 	monsterSprite.setTexture(monsterTexture);
+	supermonsterSprite.setTexture(supermonsterTexture);
 
 	// Game objects setup
 	Monster monsters[MONSTER_COUNT];
 	for (int i = 0; i < MONSTER_COUNT; i++) {
-		monsters[i] = Monster(1, 10, 60, monsterSprite);
+		monsters[i] = Monster(
+			1, // health points
+			10, // points per kill
+			10, // damage dealt to player
+			60, // hitbox radius
+			monsterSprite
+		);
 		while (true) {
 			SpawnSocket& helper = spawnTracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
 			if (!helper.checkMount() && helper.isOutOfWindow()) {
@@ -134,8 +167,22 @@ int main()
 		}
 	}
 
-    int points = 0;
-	initializeText(pointTotal, font, 18, 30, 5, "Points: " + to_string(points), sf::Color::White);
+	Monster supermonsters[SUPERMONSTER_COUNT];
+	for (int i = 0; i < SUPERMONSTER_COUNT; i++) {
+		for (int i = 0; i < SUPERMONSTER_COUNT; i++) {
+			supermonsters[i] = Monster(
+				2, // health points
+				20, // points per kill
+				15, // damage dealt to player
+				60, // hitbox radius
+				supermonsterSprite
+			);
+			supermonsters[i].setCooldown(500);
+		}
+	}
+
+	initializeText(healthDisplay, font, 18, 10, WINDOW_WIDTH - 200, "HEALTH: " + to_string(playerHealth), sf::Color::White);
+	initializeText(pointTotal, font, 18, 10, 5, "SCORE: " + to_string(points), sf::Color::White);
 	initializeText(gunpointNotFound, font, 26, (WINDOW_HEIGHT / 2), (WINDOW_WIDTH / 3), "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
 
     sf::SoundBuffer buffer;
@@ -211,9 +258,9 @@ int main()
 		{
 			aimSprite.setPosition(webcamThread.getX(), webcamThread.getY());
 
-			updateEntities(monsters, spawnTracks);
-			displayBackgroundAndUI(window, backgroundSprite, pointTotal, points);
-			displayGameObjects(window, spawnTracks);
+			updateEntities(monsters, supermonsters, spawnTracks);
+			displayBackgroundAndUI(window, backgroundSprite, pointTotal, healthDisplay, points, playerHealth);
+			displayGameObjects(window, spawnTracks, playerHealth);
 
 			if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
 				window.draw(gunpointNotFound);

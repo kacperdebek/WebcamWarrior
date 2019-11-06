@@ -20,9 +20,9 @@ SpawnTrack::SpawnTrack(int startY, int speed, int shift) {
 	}
 }
 
-void SpawnTrack::update() {
+void SpawnTrack::update(int& playerHealth) {
 	for (int i = 0; i < SPAWN_SOCKETS_PER_TRACK; i++) {
-		this->sockets[i].update();
+		this->sockets[i].update(playerHealth);
 	}
 }
 

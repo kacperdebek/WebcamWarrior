@@ -13,11 +13,15 @@ class SpawnSocket
 	public:
 		SpawnSocket();
 		SpawnSocket(int, int, int);
-		void update();
+		void update(int&);
 		void draw(sf::RenderWindow&);
+
 		void mount(Monster&);
 		void unmount();
 		bool checkMount();
+		void registerShot();
+
+
 		bool checkCollision(int, int, int);
 		bool isOutOfWindow();
 		Monster& getMonster();

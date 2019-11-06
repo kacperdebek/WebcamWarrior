@@ -4,10 +4,14 @@ Monster::Monster() {
 	this->cooldown = 0;
 }
 
-Monster::Monster(int health, int points, int hitboxRadius, sf::Sprite& sprite){
+Monster::Monster(int health, int points, int damage, int hitboxRadius, sf::Sprite& sprite){
+	this->totalHealth = health;
+	this->health = health;
 	this->cooldown = 0;
 	this->isMounted = false;
 	this->hitboxRadius = hitboxRadius;
+	this->damage = damage;
+
 	this->sprite = sprite;
 	this->hitbox = sf::CircleShape();
 	this->hitbox.setRadius(hitboxRadius);
@@ -31,6 +35,7 @@ void Monster::drawHitbox(sf::RenderWindow& window) {
 }
 
 void Monster::setMounted() {
+	this->health = this->totalHealth;
 	this->isMounted = true;
 	this->cooldown = 0;
 }
@@ -44,6 +49,15 @@ bool Monster::checkMount() {
 	return this->isMounted;
 }
 
+bool Monster::handleShot() {
+	cout << "Monster hit, health: " << this->health << endl;
+	if (--this->health <= 0) {
+		this->health = this->totalHealth;
+		return true;
+	}
+	return false;
+}
+
 int Monster::getHitboxRadius() {
 	return this->hitboxRadius;
 }
@@ -54,4 +68,12 @@ bool Monster::hasCooldown() {
 		return true;
 	}
 	return false;
+}
+
+void Monster::setCooldown(int cd) {
+	this->cooldown = cd;
+}
+
+int Monster::getDamage() {
+	return this->damage;
 }
