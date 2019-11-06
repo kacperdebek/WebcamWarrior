@@ -36,5 +36,6 @@ public:
 	void setCooldown(int);
 	void setMounted();
 	int getDamage();
+	int getPoints();
 
 };

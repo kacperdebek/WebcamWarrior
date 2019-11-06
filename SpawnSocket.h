@@ -19,7 +19,7 @@ class SpawnSocket
 		void mount(Monster&);
 		void unmount();
 		bool checkMount();
-		void registerShot();
+		int* registerShot();
 
 
 		bool checkCollision(int, int, int);

@@ -30,11 +30,13 @@ void displayGameObjects(sf::RenderWindow& window, SpawnTrack (&spawnTracks)[SPAW
 	}
 }
 
-bool checkForCollisions(SpawnTrack tracks[SPAWN_TRACK_COUNT], WebcamControl& webcamThread) {
+bool checkForCollisions(SpawnTrack tracks[SPAWN_TRACK_COUNT], WebcamControl& webcamThread, int& points, int& health) {
 	for (int i = 0; i < SPAWN_TRACK_COUNT; i++) {
 		for (int j = 0; j < SPAWN_SOCKETS_PER_TRACK; j++) {
 			if (tracks[i].sockets[j].checkCollision(webcamThread.getX(), webcamThread.getY(), 30)) {
-				tracks[i].sockets[j].registerShot();
+				int* shotEffect = tracks[i].sockets[j].registerShot();
+				health -= shotEffect[0];
+				points += shotEffect[1];
 				return true;
 			}
 		}
@@ -209,7 +211,7 @@ int main()
                 window.close();
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Space && playPressed) {
-                    if (checkForCollisions(spawnTracks, webcamThread) && !spacePressed) {
+                    if (checkForCollisions(spawnTracks, webcamThread, points, playerHealth) && !spacePressed) {
                         spacePressed = true;
                         popSound.play();
                         cout << "Bullseye!" << endl;

@@ -55,8 +55,12 @@ bool SpawnSocket::checkMount() {
 	return this->isMounted;
 }
 
-void SpawnSocket::registerShot() {
+int* SpawnSocket::registerShot() {
+	int shotDetails[2];
+	shotDetails[0] = this->getMonster().getDamage();
+	shotDetails[1] = this->getMonster().getPoints();
 	if (this->getMonster().handleShot()) this->unmount();
+	return shotDetails;
 }
 
 bool SpawnSocket::checkCollision(int aimX, int aimY, int aimRadius) {
