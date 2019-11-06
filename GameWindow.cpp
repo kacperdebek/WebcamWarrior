@@ -30,12 +30,32 @@ bool checkForCollisions(SpawnTrack tracks[5], WebcamControl& webcamThread) {
 		for (int j = 0; j < 10; j++) {
 			if (tracks[i].sockets[j].checkCollision(webcamThread.getX(), webcamThread.getY(), 30)) {
 				cout << "Collision! " << tracks[i].sockets[j].checkCollision(webcamThread.getX(), webcamThread.getY(), 30);
+				tracks[i].sockets[j].unmount();
 				return true;
 			}
 		}
 	}
 	return false;
 }
+
+void updateEntities(Monster monsters[5], SpawnTrack tracks[5]) {
+	for (int i = 0; i < 5; i++) {
+		if (!monsters[i].checkMount() && monsters[i].hasCooldown() > 0) {
+			cout << "Entered the loop: mounter | cd " << monsters[i].checkMount() << " " << monsters[i].hasCooldown() << "\n";
+			while (true) {
+				cout << "Checking sockets...";
+				SpawnSocket& helper = tracks[rand() % 4].sockets[rand() % 9];
+				if (!helper.checkMount() && helper.isOutOfWindow()) {
+					helper.mount(monsters[i]);
+					cout << "Mount\n";
+					
+					break;
+				}
+			}
+		}
+	}
+}
+
 void initializeText(sf::Text& text, sf::Font& font, int textSize, int xPosition, int yPosition, const String& label, const sf::Color& color)
 {
 	text.setFont(font);
@@ -101,13 +121,12 @@ int main()
 	Monster monsters[5];
 	for (int i = 0; i < 5; i++) {
 		monsters[i] = Monster(1, 10, 60, monsterSprite);
-		int limiter = 0;
-		while (!monsters[i].checkMount() && limiter < 3) {
+		while (true) {
 			SpawnSocket& helper = spawnTracks[rand() % 4].sockets[rand() % 9];
-			limiter++;
-			if (!helper.checkMount()) {
-				helper.mount(monsters[i]);
+			if (!helper.checkMount() && helper.isOutOfWindow()) {
 				cout << "Monster mounted!\n";
+				helper.mount(monsters[i]);
+				break;
 			}
 		}
 	}
@@ -188,6 +207,8 @@ int main()
 		if (playPressed)
 		{
 			aimSprite.setPosition(webcamThread.getX(), webcamThread.getY());
+
+			updateEntities(monsters, spawnTracks);
 			displayBackgroundAndUI(window, backgroundSprite, pointTotal, points);
 			displayGameObjects(window, spawnTracks);
 

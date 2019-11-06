@@ -9,7 +9,7 @@ class SpawnSocket
 		int baseline;
 		int speed;
 		bool isMounted;
-		Monster mountedMonster;
+		Monster* mountedMonster;
 	public:
 		SpawnSocket();
 		SpawnSocket(int, int, int);
@@ -19,4 +19,6 @@ class SpawnSocket
 		void unmount();
 		bool checkMount();
 		bool checkCollision(int, int, int);
+		bool isOutOfWindow();
+		Monster& getMonster();
 };

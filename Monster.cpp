@@ -1,9 +1,11 @@
 #include "Monster.h"
 Monster::Monster() {
 	this->isMounted = false;
+	this->cooldown = 0;
 }
 
 Monster::Monster(int health, int points, int hitboxRadius, sf::Sprite& sprite){
+	this->cooldown = 0;
 	this->isMounted = false;
 	this->hitboxRadius = hitboxRadius;
 	this->sprite = sprite;
@@ -14,9 +16,6 @@ Monster::Monster(int health, int points, int hitboxRadius, sf::Sprite& sprite){
 
 
 void Monster::updatePosition(int x, int y) {
-	if (cooldown > 0) {
-		cooldown--;
-	}
 	this->centerX = x;
 	this->centerY = y;
 }
@@ -31,9 +30,14 @@ void Monster::drawHitbox(sf::RenderWindow& window) {
 	window.draw(this->hitbox);
 }
 
+void Monster::setMounted() {
+	this->isMounted = true;
+	this->cooldown = 0;
+}
+
 void Monster::unmount() {
-	this->isMounted = 0;
-	this->cooldown = 100;
+	this->isMounted = false;
+	this->cooldown = 10;
 }
 
 bool Monster::checkMount() {
@@ -42,4 +46,12 @@ bool Monster::checkMount() {
 
 int Monster::getHitboxRadius() {
 	return this->hitboxRadius;
+}
+
+bool Monster::hasCooldown() {
+	if (this->cooldown > 0) {
+		cooldown--;
+		return true;
+	}
+	return false;
 }

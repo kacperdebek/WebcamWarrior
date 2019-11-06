@@ -7,8 +7,8 @@ private:
 	int centerX;
 	int centerY;
 	int hitboxRadius;
-	int cooldown;
 
+	int cooldown;
 	bool isMounted;
 
 	sf::Sprite sprite;
@@ -18,6 +18,7 @@ private:
 	int health;
 	int pointsValue;
 public:
+
 	Monster();
 	Monster(int, int, int, sf::Sprite&);
 	void updatePosition(int, int);
@@ -26,4 +27,7 @@ public:
 	void unmount();
 	bool checkMount();
 	int getHitboxRadius();
+	bool hasCooldown();
+	void setMounted();
+
 };

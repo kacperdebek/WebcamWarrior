@@ -13,8 +13,6 @@ SpawnTrack.cpp
 SpawnTrack.h
 SpawnSocket.cpp
 SpawnSocket.h
-Entity.cpp
-Entity.h
 GameWindow.cpp
 Menu.cpp
 Menu.hpp
