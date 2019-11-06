@@ -20,7 +20,7 @@ void WebcamControl::run()
 		resize(image, image, Size(1280, 720));
         flip(image, image, 1);
         cvtColor(image, image_gray, COLOR_BGR2GRAY);
-        threshold(image_gray, result, 200, 255, THRESH_BINARY);
+        threshold(image_gray, result, webcamThreshold, 255, THRESH_BINARY);
         Moments m = moments(result, true);
         x = m.m10 / m.m00;
         y = m.m01 / m.m00;
@@ -34,9 +34,17 @@ void WebcamControl::run()
 }
 int WebcamControl::getX()
 {
-    return x;
+    return this->x;
 }
 int WebcamControl::getY()
 {
-    return y;
+    return this->y;
+}
+void WebcamControl::setThreshold(int targetThreshold)
+{
+	this->webcamThreshold = targetThreshold;
+}
+int WebcamControl::getThreshold()
+{
+	return this->webcamThreshold;
 }

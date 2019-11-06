@@ -3,6 +3,7 @@
 #include "Monster.h"
 #include <iostream>
 #include "Menu.hpp"
+#include "SliderSFML.h"
 #define SPAWN_DELAY 10
 #define WINDOW_HEIGHT 720
 #define WINDOW_WIDTH 1280
@@ -92,11 +93,13 @@ int main()
 	
     WebcamControl webcamThread;
     sf::Thread thread(&WebcamControl::run, &webcamThread);
+	webcamThread.setThreshold(200);
     thread.launch();
 
     sf::Text pointTotal;
 	sf::Text healthDisplay;
     sf::Text gunpointNotFound;
+	sf::Text sliderText;
     sf::Font font;
 
 	sf::Texture backgroundTexture;
@@ -186,7 +189,7 @@ int main()
 	initializeText(healthDisplay, font, 18, 10, WINDOW_WIDTH - 200, "HEALTH: " + to_string(playerHealth), sf::Color::White);
 	initializeText(pointTotal, font, 18, 10, 5, "SCORE: " + to_string(points), sf::Color::White);
 	initializeText(gunpointNotFound, font, 26, (WINDOW_HEIGHT / 2), (WINDOW_WIDTH / 3), "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
-
+	initializeText(sliderText, font, 26, (WINDOW_HEIGHT / 3), (WINDOW_WIDTH / 3), "Threshold adjustment", sf::Color::White);
     sf::SoundBuffer buffer;
     if (!buffer.loadFromFile("Pop.wav")){
         cout << "Couldn't load the sound file" << endl;
@@ -198,10 +201,15 @@ int main()
     sf::Time dt;
     bool spacePressed = false;
 	bool playPressed = false;
-
-	Menu menu(WINDOW_WIDTH, WINDOW_HEIGHT);
-
+	bool optionsPressed = false;
+	Menu mainMenu(WINDOW_WIDTH, WINDOW_HEIGHT);
+	Menu optionsMenu(WINDOW_WIDTH, WINDOW_HEIGHT);
+	SliderSFML slider(WINDOW_WIDTH/3, WINDOW_HEIGHT/2);
+	slider.create(0, 255);
+	slider.setSliderValue(webcamThread.getThreshold());
 	static std::once_flag onceFlag;
+	float currSliderValue;
+	float oldSliderValue = slider.getSliderValue();
     while (window.isOpen())
     {
         sf::Event event;
@@ -220,7 +228,7 @@ int main()
                     else if (!spacePressed && playPressed)
                     {
                         spacePressed = true;
-                        cout << "Miss! " << webcamThread.getX() << ", " << webcamThread.getY() << endl;
+                        cout << "Miss! " << endl;
                         points -= 1;
                     }
                 }
@@ -228,25 +236,29 @@ int main()
 				{
 					playPressed = false;
 				}
+				else if (event.key.code == sf::Keyboard::Escape && optionsPressed)
+				{
+					optionsPressed = false;
+				}
             }
             if (event.type == sf::Event::KeyReleased) {
                 if (event.key.code == sf::Keyboard::Space && playPressed) {
                     spacePressed = false;
                 }
 				else if (event.key.code == sf::Keyboard::Up)
-					menu.MoveUp();
+					mainMenu.MoveUp();
 				else if (event.key.code == sf::Keyboard::Down)
-					menu.MoveDown();
-				else if (event.key.code == sf::Keyboard::Enter && !playPressed)
+					mainMenu.MoveDown();
+				else if (event.key.code == sf::Keyboard::Enter && !playPressed && !optionsPressed)
 				{
-					switch (menu.GetPressedItem())
+					switch (mainMenu.GetPressedItem())
 					{
 						case 0:
-							std::cout << "Play button has been pressed" << std::endl;
+							//std::cout << "Play button has been pressed" << std::endl;
 							playPressed = true;
 							break;
 						case 1:
-							std::cout << "Option button has been pressed" << std::endl;
+							optionsPressed = true;
 							break;
 						case 2:
 							thread.terminate();
@@ -256,9 +268,9 @@ int main()
 				}
             }
         }
+		aimSprite.setPosition(webcamThread.getX(), webcamThread.getY());
 		if (playPressed)
 		{
-			aimSprite.setPosition(webcamThread.getX(), webcamThread.getY());
 
 			updateEntities(monsters, supermonsters, spawnTracks);
 			displayBackgroundAndUI(window, backgroundSprite, pointTotal, healthDisplay, points, playerHealth);
@@ -271,10 +283,22 @@ int main()
 				window.draw(aimSprite);
 			}
 		}
-		else
+		else if (!optionsPressed)
 		{
 			window.clear();
-			menu.draw(window);
+			window.draw(aimSprite);
+			mainMenu.draw(window);
+		}
+		else{
+			
+			currSliderValue = slider.getSliderValue();
+			if (currSliderValue != oldSliderValue)
+				webcamThread.setThreshold(currSliderValue);
+			window.clear();
+			window.draw(aimSprite);
+			window.draw(sliderText);
+			slider.draw(window);
+			oldSliderValue = currSliderValue;
 		}
         window.display();
     }
