@@ -189,7 +189,7 @@ int main()
 	initializeText(healthDisplay, font, 18, 10, WINDOW_WIDTH - 200, "HEALTH: " + to_string(playerHealth), sf::Color::White);
 	initializeText(pointTotal, font, 18, 10, 5, "SCORE: " + to_string(points), sf::Color::White);
 	initializeText(gunpointNotFound, font, 26, (WINDOW_HEIGHT / 2), (WINDOW_WIDTH / 3), "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
-	initializeText(sliderText, font, 26, (WINDOW_HEIGHT / 3), (WINDOW_WIDTH / 3), "Threshold adjustment", sf::Color::White);
+	initializeText(sliderText, font, 26, (WINDOW_HEIGHT / 2) - 80, (WINDOW_WIDTH / 3) + 90, "Threshold adjustment", sf::Color::White);
     sf::SoundBuffer buffer;
     if (!buffer.loadFromFile("Pop.wav")){
         cout << "Couldn't load the sound file" << endl;
@@ -206,7 +206,7 @@ int main()
 	vector<string> optionsMenuLabels = { "Template"};
 	Menu mainMenu(WINDOW_WIDTH, WINDOW_HEIGHT, mainMenuLabels, sf::Color::White, sf::Color::Red);
 	Menu optionsMenu(WINDOW_WIDTH, WINDOW_HEIGHT, optionsMenuLabels, sf::Color::White, sf::Color::Red);
-	SliderSFML slider(WINDOW_WIDTH/3, WINDOW_HEIGHT/2);
+	SliderSFML slider(WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2);
 	slider.create(0, 255);
 	slider.setSliderValue(webcamThread.getThreshold());
 	static std::once_flag onceFlag;
@@ -288,8 +288,9 @@ int main()
 		else if (!optionsPressed)
 		{
 			window.clear();
-			window.draw(aimSprite);
 			mainMenu.draw(window);
+			window.draw(aimSprite);
+			
 		}
 		else{
 			
@@ -297,9 +298,10 @@ int main()
 			if (currSliderValue != oldSliderValue)
 				webcamThread.setThreshold(currSliderValue);
 			window.clear();
-			window.draw(aimSprite);
+			window.draw(mainMenu.getBackground());
 			window.draw(sliderText);
 			slider.draw(window);
+			window.draw(aimSprite); //TODO: do spakowania w jedn¹ funkcjê
 			oldSliderValue = currSliderValue;
 		}
         window.display();

@@ -13,11 +13,17 @@ public:
 	void MoveUp();
 	void MoveDown();
 	int GetPressedItem() { return selectedItemIndex; }
+	sf::Sprite getBackground();
 
 private:
 	int selectedItemIndex;
 	int numOfLabels;
+	int width;
+	int height;
 	sf::Font font;
 	sf::Text *menu;
-
+	sf::Sprite menuBackgroundSprite;
+	sf::Texture menuBackgroundTexture;
+	sf::Sprite menuButtonSprite;
+	sf::Texture menuButtonTexture;
 };
