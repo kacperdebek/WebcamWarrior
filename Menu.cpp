@@ -36,7 +36,7 @@ Menu::Menu(float width, float height, vector<string> labelList, sf::Color mainCo
 		menu[i].setOrigin((bounds.width - box.x) / 2 + bounds.left, (bounds.height - box.y) / 2 + bounds.top);
 		menu[i].setPosition(sf::Vector2f((this->width / 2) - 115, (this->height / (numOfLabels + 1) * (i+1)) - 25));
 	}
-	selectedItemIndex = 0;
+	selectedItemIndex = -1;
 }
 Menu::~Menu()
 {
