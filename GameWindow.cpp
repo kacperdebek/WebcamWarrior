@@ -9,6 +9,8 @@
 #define WINDOW_WIDTH 1280
 #define MONSTER_COUNT 5
 #define SUPERMONSTER_COUNT 2
+#define MEDPACK_COUNT 2
+#define MONEYBAG_COUNT 4
 
 void displayBackgroundAndUI(sf::RenderWindow &window,
 	sf::Sprite& backgroundSprite,
@@ -36,7 +38,7 @@ bool checkForCollisions(SpawnTrack tracks[SPAWN_TRACK_COUNT], WebcamControl& web
 		for (int j = 0; j < SPAWN_SOCKETS_PER_TRACK; j++) {
 			if (tracks[i].sockets[j].checkCollision(webcamThread.getX(), webcamThread.getY(), 30)) {
 				int* shotEffect = tracks[i].sockets[j].registerShot();
-				health -= shotEffect[0];
+				if(shotEffect[0] <= 0) health -= shotEffect[0];
 				points += shotEffect[1];
 				return true;
 			}
@@ -45,7 +47,11 @@ bool checkForCollisions(SpawnTrack tracks[SPAWN_TRACK_COUNT], WebcamControl& web
 	return false;
 }
 
-void updateEntities(Monster monsters[MONSTER_COUNT], Monster supermonsters[SUPERMONSTER_COUNT], SpawnTrack tracks[SPAWN_TRACK_COUNT]) {
+void updateEntities(Monster monsters[MONSTER_COUNT], 
+	Monster supermonsters[SUPERMONSTER_COUNT], 
+	Monster medpacks[MEDPACK_COUNT],
+	Monster moneybags[MONEYBAG_COUNT],
+	SpawnTrack tracks[SPAWN_TRACK_COUNT]) {
 	for (int i = 0; i < MONSTER_COUNT; i++) {
 		if (!monsters[i].checkMount() || monsters[i].hasCooldown() > 0) {
 			int memoryLimiter = 0;
@@ -69,6 +75,36 @@ void updateEntities(Monster monsters[MONSTER_COUNT], Monster supermonsters[SUPER
 				SpawnSocket& helper = tracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
 				if (!helper.checkMount() && helper.isOutOfWindow()) {
 					helper.mount(supermonsters[i]);
+
+					break;
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < MEDPACK_COUNT; i++) {
+		if (!medpacks[i].checkMount() || medpacks[i].hasCooldown() > 0) {
+			int memoryLimiter = 0;
+			while (true && memoryLimiter < 4) {
+				memoryLimiter++;
+				SpawnSocket& helper = tracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
+				if (!helper.checkMount() && helper.isOutOfWindow()) {
+					helper.mount(medpacks[i]);
+
+					break;
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < MONEYBAG_COUNT; i++) {
+		if (!moneybags[i].checkMount() || moneybags[i].hasCooldown() > 0) {
+			int memoryLimiter = 0;
+			while (true && memoryLimiter < 4) {
+				memoryLimiter++;
+				SpawnSocket& helper = tracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
+				if (!helper.checkMount() && helper.isOutOfWindow()) {
+					helper.mount(moneybags[i]);
 
 					break;
 				}
@@ -106,11 +142,15 @@ int main()
 	sf::Texture aimTexture;
 	sf::Texture monsterTexture;
 	sf::Texture supermonsterTexture;
+	sf::Texture medpackTexture;
+	sf::Texture moneybagTexture;
 
 	sf::Sprite backgroundSprite;
 	sf::Sprite aimSprite;
 	sf::Sprite monsterSprite;
 	sf::Sprite supermonsterSprite;
+	sf::Sprite medpackSprite;
+	sf::Sprite moneybagSprite;
 
 	// Game logic setup
 	int playerHealth = 100;
@@ -146,11 +186,22 @@ int main()
 		cout << "Couldn't load the super monster texture" << endl;
 		return -1;
 	}
+	if (!medpackTexture.loadFromFile("medpack.png")) {
+		cout << "Couldn't load the medpack texture" << endl;
+		return -1;
+	}
+	if (!moneybagTexture.loadFromFile("moneybag.png")) {
+		cout << "Couldn't load the moneybag texture" << endl;
+		return -1;
+	}
+
 
 	backgroundSprite.setTexture(backgroundTexture);
 	aimSprite.setTexture(aimTexture);
 	monsterSprite.setTexture(monsterTexture);
 	supermonsterSprite.setTexture(supermonsterTexture);
+	medpackSprite.setTexture(medpackTexture);
+	moneybagSprite.setTexture(moneybagTexture);
 
 	// Game objects setup
 	Monster monsters[MONSTER_COUNT];
@@ -183,6 +234,34 @@ int main()
 				supermonsterSprite
 			);
 			supermonsters[i].setCooldown(500);
+		}
+	}
+
+	Monster medpacks[MEDPACK_COUNT];
+	for (int i = 0; i < MEDPACK_COUNT; i++) {
+		for (int i = 0; i < MEDPACK_COUNT; i++) {
+			medpacks[i] = Monster(
+				1, // health points
+				0, // points per kill
+				-20, // damage dealt to player
+				60, // hitbox radius
+				medpackSprite
+			);
+			medpacks[i].setCooldown(150000);
+		}
+	}
+
+	Monster moneybags[MONEYBAG_COUNT];
+	for (int i = 0; i < MONEYBAG_COUNT; i++) {
+		for (int i = 0; i < MONEYBAG_COUNT; i++) {
+			moneybags[i] = Monster(
+				1, // health points
+				100, // points per kill
+				0, // damage dealt to player
+				60, // hitbox radius
+				moneybagSprite
+			);
+			moneybags[i].setCooldown(250000);
 		}
 	}
 
@@ -219,7 +298,7 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-            if (event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonPressed) {
+            if (event.type == sf::Event::KeyReleased || event.type == sf::Event::MouseButtonPressed) {
                 if (event.key.code == sf::Keyboard::Space && playPressed) {
                     if (checkForCollisions(spawnTracks, webcamThread, points, playerHealth) && !spacePressed) {
                         spacePressed = true;
@@ -264,7 +343,7 @@ int main()
 
 				}
             }
-            if (event.type == sf::Event::KeyReleased) {
+            if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Space && playPressed) {
                     spacePressed = false;
                 }
@@ -273,7 +352,7 @@ int main()
 		aimSprite.setPosition(webcamThread.getX() - (aimSprite.getGlobalBounds().width / 2), webcamThread.getY() - (aimSprite.getGlobalBounds().height / 2));
 		if (playPressed)
 		{
-			updateEntities(monsters, supermonsters, spawnTracks);
+			updateEntities(monsters, supermonsters, medpacks, moneybags, spawnTracks);
 			displayBackgroundAndUI(window, backgroundSprite, pointTotal, healthDisplay, points, playerHealth);
 			displayGameObjects(window, spawnTracks, playerHealth);
 
