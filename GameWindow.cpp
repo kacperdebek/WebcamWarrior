@@ -206,7 +206,7 @@ int main()
 	vector<string> optionsMenuLabels = { "Template"};
 	Menu mainMenu(WINDOW_WIDTH, WINDOW_HEIGHT, mainMenuLabels, sf::Color::White, sf::Color::Red);
 	Menu optionsMenu(WINDOW_WIDTH, WINDOW_HEIGHT, optionsMenuLabels, sf::Color::White, sf::Color::Red);
-	SliderSFML slider(WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2);
+	SliderSFML slider(WINDOW_WIDTH/2 - 130, WINDOW_HEIGHT/2, 255);
 	slider.create(0, 255);
 	slider.setSliderValue(webcamThread.getThreshold());
 	static std::once_flag onceFlag;
@@ -219,7 +219,7 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-            if (event.type == sf::Event::KeyPressed) {
+            if (event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonPressed) {
                 if (event.key.code == sf::Keyboard::Space && playPressed) {
                     if (checkForCollisions(spawnTracks, webcamThread, points, playerHealth) && !spacePressed) {
                         spacePressed = true;
@@ -234,6 +234,7 @@ int main()
                         points -= 1;
                     }
                 }
+
 				else if (event.key.code == sf::Keyboard::Escape && playPressed)
 				{
 					playPressed = false;
@@ -242,16 +243,11 @@ int main()
 				{
 					optionsPressed = false;
 				}
-				else if (event.key.code == sf::Keyboard::Up)
-					mainMenu.MoveUp();
-				else if (event.key.code == sf::Keyboard::Down)
-					mainMenu.MoveDown();
-				else if (event.key.code == sf::Keyboard::Enter && !playPressed && !optionsPressed)
+				else if ((event.key.code == sf::Keyboard::Space || event.key.code == sf::Mouse::Left) && !playPressed && !optionsPressed)
 				{
 					switch (mainMenu.GetPressedItem())
 					{
 					case 0:
-						//std::cout << "Play button has been pressed" << std::endl;
 						playPressed = true;
 						break;
 					case 1:
@@ -261,7 +257,11 @@ int main()
 						thread.terminate();
 						window.close();
 						break;
+					default:
+						break;
 					}
+					
+
 				}
             }
             if (event.type == sf::Event::KeyReleased) {
@@ -270,10 +270,9 @@ int main()
                 }
             }
         }
-		aimSprite.setPosition(webcamThread.getX(), webcamThread.getY());
+		aimSprite.setPosition(webcamThread.getX() - (aimSprite.getGlobalBounds().width / 2), webcamThread.getY() - (aimSprite.getGlobalBounds().height / 2));
 		if (playPressed)
 		{
-
 			updateEntities(monsters, supermonsters, spawnTracks);
 			displayBackgroundAndUI(window, backgroundSprite, pointTotal, healthDisplay, points, playerHealth);
 			displayGameObjects(window, spawnTracks, playerHealth);
@@ -288,7 +287,7 @@ int main()
 		else if (!optionsPressed)
 		{
 			window.clear();
-			mainMenu.draw(window);
+			mainMenu.draw(window, webcamThread);
 			window.draw(aimSprite);
 			
 		}

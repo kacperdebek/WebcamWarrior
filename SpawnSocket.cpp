@@ -72,7 +72,7 @@ bool SpawnSocket::checkCollision(int aimX, int aimY, int aimRadius) {
 			return (abs(this->positionX + aimX) <= aimRadius + this->getMonster().getHitboxRadius());
 		}
 
-		if (sqrt(pow(abs(aimX - this->positionX), 2) + pow(abs(aimY - this->baseline), 2)) <= aimRadius + this->getMonster().getHitboxRadius()) {
+		if (sqrt(pow(abs(aimX - this->positionX - 64), 2) + pow(abs(aimY - this->baseline - 64), 2)) <= aimRadius + this->getMonster().getHitboxRadius()) {
 			return true;
 		}
 	}

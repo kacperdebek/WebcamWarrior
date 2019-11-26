@@ -2,6 +2,7 @@
 #include "SFML/Graphics.hpp"
 #include <mutex>
 #include <iostream>
+#include "WebcamControl.hpp"
 using namespace std;
 class Menu
 {
@@ -9,9 +10,7 @@ public:
 	Menu(float width, float height, vector<string> labelList, sf::Color mainColor, sf::Color selectedColor);
 	~Menu();
 
-	void draw(sf::RenderWindow &window);
-	void MoveUp();
-	void MoveDown();
+	void draw(sf::RenderWindow &window, WebcamControl webcamThread);
 	int GetPressedItem() { return selectedItemIndex; }
 	sf::Sprite getBackground();
 
@@ -20,6 +19,8 @@ private:
 	int numOfLabels;
 	int width;
 	int height;
+	sf::Color selectedColor;
+	sf::Color mainColor;
 	sf::Font font;
 	sf::Text *menu;
 	sf::Sprite menuBackgroundSprite;

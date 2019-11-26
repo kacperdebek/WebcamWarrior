@@ -1,12 +1,12 @@
 #include "SliderSFML.h"
 
 
-SliderSFML::SliderSFML(int x, int y)
+SliderSFML::SliderSFML(int x, int y, int length)
 {
 	xCord = x;
 	yCord = y;
 	axisHeight = 10;
-	axisWidth = 200;
+	axisWidth = length;
 	sliderWidth = 20;
 	sliderHeight = 30;
 
@@ -52,6 +52,17 @@ void SliderSFML::logic(sf::RenderWindow &window)
 			sliderValue = (minValue + ((slider.getPosition().x - xCord) / axisWidth * (maxValue - minValue)));
 		}
 	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && sliderValue > 0)
+	{
+		slider.setPosition(slider.getPosition().x - 1, yCord);
+		sliderValue--;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && sliderValue < 255)
+	{
+		slider.setPosition(slider.getPosition().x + 1, yCord);
+		sliderValue++;
+	}
+	
 }
 
 float SliderSFML::getSliderValue()

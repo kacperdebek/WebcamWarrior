@@ -19,6 +19,8 @@ Menu::Menu(float width, float height, vector<string> labelList, sf::Color mainCo
 	}
 	this->width = width;
 	this->height = height;
+	this->selectedColor = selectedColor;
+	this->mainColor = mainColor;
 	this->menuBackgroundSprite.setTexture(this->menuBackgroundTexture);
 	this->menuButtonSprite.setTexture(this->menuButtonTexture);
 	this->menuButtonSprite.setOrigin(sf::Vector2f(70.f, 30.f));
@@ -27,7 +29,7 @@ Menu::Menu(float width, float height, vector<string> labelList, sf::Color mainCo
 	for (int i = 0; i < numOfLabels; i++)
 	{
 		menu[i].setFont(font);
-		i == 0 ? menu[i].setColor(selectedColor) : menu[i].setColor(mainColor);
+		menu[i].setColor(mainColor);
 		menu[i].setString(labelList.at(i));
 		const sf::FloatRect bounds(menu[i].getLocalBounds());
 		const sf::Vector2f box(menuButtonTexture.getSize());
@@ -41,47 +43,31 @@ Menu::~Menu()
 	delete[] menu;
 }
 
-void Menu::draw(sf::RenderWindow &window)
+void Menu::draw(sf::RenderWindow &window, WebcamControl webcamThread)
 {
+	bool itemIsSelected = false;
 	window.draw(menuBackgroundSprite);
 	for (int i = 0; i < numOfLabels; i++)
 	{
 		menuButtonSprite.setPosition(sf::Vector2f((this->width / 2) - 50, this->height / (numOfLabels + 1) * (i + 1)));
 		window.draw(menuButtonSprite);
+		if((menu[i].getGlobalBounds().contains(webcamThread.getX(), webcamThread.getY())) || 
+			(menu[i].getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y)))
+		{
+			menu[i].setColor(selectedColor);
+			selectedItemIndex = i;
+			itemIsSelected = true;
+		}
+		else
+		{
+			menu[i].setColor(mainColor);
+		}
 		window.draw(menu[i]);
 	}
-}
-
-void Menu::MoveUp()
-{
-	if (selectedItemIndex - 1 >= 0)
-	{
-		menu[selectedItemIndex].setColor(sf::Color::White);
-		selectedItemIndex--;
-		menu[selectedItemIndex].setColor(sf::Color::Red);
-	}
-	else
-	{
-		menu[selectedItemIndex].setColor(sf::Color::White);
-		selectedItemIndex = numOfLabels - 1;
-		menu[selectedItemIndex].setColor(sf::Color::Red);
-	}
-}
-
-void Menu::MoveDown()
-{
-	if (selectedItemIndex + 1 < numOfLabels)
-	{
-		menu[selectedItemIndex].setColor(sf::Color::White);
-		selectedItemIndex++;
-		menu[selectedItemIndex].setColor(sf::Color::Red);
-	}
-	else
-	{
-		menu[selectedItemIndex].setColor(sf::Color::White);
-		selectedItemIndex = 0;
-		menu[selectedItemIndex].setColor(sf::Color::Red);
-	}
+	if (!itemIsSelected)
+		selectedItemIndex = -1;
+	itemIsSelected = false;
+	 
 }
 sf::Sprite Menu::getBackground()
 {

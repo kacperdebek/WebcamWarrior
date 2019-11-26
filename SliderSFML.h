@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include <iostream>
-
+#include "WebcamControl.hpp"
 class SliderSFML
 {
 	sf::RectangleShape slider;
@@ -18,7 +18,7 @@ class SliderSFML
 	int sliderHeight;
 	float sliderValue;
 public:
-	SliderSFML(int x, int y);
+	SliderSFML(int x, int y, int length);
 	sf::Text returnText(int x, int y, std::string z, int fontSize);
 	void create(int min, int max);
 	void logic(sf::RenderWindow &window);
