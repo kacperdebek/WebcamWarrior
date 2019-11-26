@@ -43,13 +43,22 @@ void SliderSFML::create(int min, int max)
 
 void SliderSFML::logic(sf::RenderWindow &window)
 {
-	if (slider.getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y)
-		&& sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 	{
 		if (sf::Mouse::getPosition(window).x >= xCord && sf::Mouse::getPosition(window).x <= xCord + axisWidth)
 		{
 			slider.setPosition(sf::Mouse::getPosition(window).x, yCord);
 			sliderValue = (minValue + ((slider.getPosition().x - xCord) / axisWidth * (maxValue - minValue)));
+		}
+		else if (sf::Mouse::getPosition(window).x >= xCord)
+		{
+			slider.setPosition(xCord + axisWidth, yCord);
+			sliderValue = maxValue;
+		}
+		else
+		{
+			slider.setPosition(xCord, yCord);
+			sliderValue = minValue;
 		}
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && sliderValue > 0)
