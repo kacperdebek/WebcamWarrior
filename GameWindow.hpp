@@ -1,6 +1,4 @@
 #pragma once
-#include <iostream>
-#include <iostream>
 #include "WebcamControl.hpp"
 #include "SpawnTrack.hpp"
 #include "Monster.hpp"

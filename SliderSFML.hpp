@@ -18,7 +18,9 @@ class SliderSFML
 	int sliderHeight;
 	float sliderValue;
 public:
+	SliderSFML();
 	SliderSFML(int x, int y, int length);
+	void setSlider(int x, int y, int length);
 	sf::Text returnText(int x, int y, std::string z, int fontSize);
 	void create(int min, int max);
 	void logic(sf::RenderWindow &window);
