@@ -15,7 +15,7 @@ void OptionsWindow::handleEvent(sf::Event event, bool& optionsPressed) {
 	}
 }
 
-void OptionsWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThread, Menu& mainMenu, sf::Sprite& aimSprite) {
+void OptionsWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThread, Menu& mainMenu, sf::Sprite& aimSprite, sf::Text notFoundMessage) {
 	currSliderValue = slider.getSliderValue();
 	if (currSliderValue != oldSliderValue)
 		webcamThread.setThreshold(currSliderValue);
@@ -23,7 +23,12 @@ void OptionsWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamTh
 	window.draw(mainMenu.getBackground());
 	window.draw(sliderText);
 	slider.draw(window);
-	window.draw(aimSprite); //TODO: do spakowania w jedn? funkcj?
+	if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
+		window.draw(notFoundMessage);
+	}
+	else {
+		window.draw(aimSprite);
+	} //TODO: do spakowania w jedn? funkcj?
 	oldSliderValue = currSliderValue;
 }
 

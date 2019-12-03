@@ -40,12 +40,13 @@ private:
 	int points;
 	int positioner;
 	int windowWidth;
+	int windowHeight;
 	bool gameOverFlag;
 	SpawnTrack spawnTracks[SPAWN_TRACK_COUNT];
 
 public:
 	GameWindow();
-	GameWindow(int, sf::Font);
+	GameWindow(int, int, sf::Font);
 	void setupGameLogic();
 	int setupGameGraphics();
 	void initializeText(sf::Text&, sf::Font&, int, int, int, const String&, const sf::Color&);

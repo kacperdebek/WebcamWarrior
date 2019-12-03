@@ -16,7 +16,15 @@ void initializeTexts(sf::Text& text, sf::Font& font, int textSize, int xPosition
 	text.setFillColor(color);
 	text.setPosition(yPosition, xPosition);
 }
-
+void showMessageOrAim(WebcamControl& webcamThread, sf::RenderWindow& window, sf::Text notFoundMessage, sf::Sprite aimSprite)
+{
+	if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
+		window.draw(notFoundMessage);
+	}
+	else {
+		window.draw(aimSprite);
+	}
+}
 int main()
 {
 	srand(time(NULL));
@@ -25,7 +33,7 @@ int main()
 
 	WebcamControl webcamThread;
 	sf::Thread thread(&WebcamControl::run, &webcamThread);
-	webcamThread.setThreshold(255);
+	webcamThread.setThreshold(200);
 	thread.launch();
 
 	sf::Text gunpointNotFound;
@@ -67,7 +75,7 @@ int main()
 	Menu optionsMenu(WINDOW_WIDTH, WINDOW_HEIGHT, optionsMenuLabels, sf::Color::White, sf::Color::Red);
 	Menu gameOverMenu(WINDOW_WIDTH, WINDOW_HEIGHT, gameOverMenuLabels, sf::Color::White, sf::Color::Red);
 
-	GameWindow newGameWindow(WINDOW_WIDTH, font);
+	GameWindow newGameWindow(WINDOW_WIDTH, WINDOW_HEIGHT, font);
 	OptionsWindow newOptionsWindow(WINDOW_WIDTH, WINDOW_HEIGHT, font, webcamThread);
 	GameWindow gameWindow = newGameWindow;
 	OptionsWindow optionsWindow = newOptionsWindow;
@@ -132,38 +140,28 @@ int main()
 		}
 		
 		aimSprite.setPosition(webcamThread.getX() - (aimSprite.getGlobalBounds().width / 2), webcamThread.getY() - (aimSprite.getGlobalBounds().height / 2));
-		if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
-			window.draw(gunpointNotFound);
-		}
-		else {
-			window.draw(aimSprite);
-		}
+		showMessageOrAim(webcamThread, window, gunpointNotFound, aimSprite);
 
 		if (gameOver) {
 			window.clear();
 			gameOverMenu.draw(window, webcamThread);
-			window.draw(aimSprite);
+			showMessageOrAim(webcamThread, window, gunpointNotFound, aimSprite);
 		}
 		else if (playPressed)
 		{
+			window.clear();
 			gameOver = gameWindow.drawWindow(window, webcamThread, aimSprite);
-			if (gameOver) {
-				window.clear();
-				gameOverMenu.draw(window, webcamThread);
-				window.draw(aimSprite);
-			}
 		}
 		else if (optionsPressed)
 		{
-			optionsWindow.drawWindow(window, webcamThread, mainMenu, aimSprite);
+			optionsWindow.drawWindow(window, webcamThread, mainMenu, aimSprite, gunpointNotFound);
 		}
 		else
 		{		
 			window.clear();
 			mainMenu.draw(window, webcamThread);
-			window.draw(aimSprite);
+			showMessageOrAim(webcamThread, window, gunpointNotFound, aimSprite);
 		}
-
 		window.display();
 	}
 

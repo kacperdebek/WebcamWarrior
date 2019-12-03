@@ -46,6 +46,8 @@ void WebcamControl::run()
 			}
 
 		}
+		if(maxArea < 50)
+			savedContour = -1;
 		Mat img(720, 1280, CV_8UC3, Scalar(0, 0, 0));
 		cvtColor(img, img, COLOR_BGR2GRAY);
 		drawContours(img, contours, savedContour, Scalar(255, 255, 255), FILLED, 8);

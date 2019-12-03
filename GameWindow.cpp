@@ -2,8 +2,9 @@
 
 GameWindow::GameWindow() {}
 
-GameWindow::GameWindow(int width, sf::Font appFont) {
+GameWindow::GameWindow(int width, int height, sf::Font appFont) {
 	windowWidth = width;
+	windowHeight = height;
 	font = appFont;
 
 	setupGameGraphics();
@@ -37,7 +38,7 @@ void GameWindow::setupGameLogic() {
 
 	initializeText(healthDisplay, font, 18, 10, windowWidth - 200, "HEALTH: " + to_string(playerHealth), sf::Color::White);
 	initializeText(pointTotal, font, 18, 10, 5, "SCORE: " + to_string(points), sf::Color::White);
-
+	initializeText(gunpointNotFound, font, 26, (windowHeight / 2), (windowWidth / 3), "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
 	//Monsters
 	for (int i = 0; i < MONSTER_COUNT; i++) {
 		monsters[i] = Monster(
@@ -260,7 +261,6 @@ void GameWindow::handleEvent(sf::Event event, bool& spacePressed, bool& playPres
 bool GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThread, sf::Sprite aimSprite)
 {
 	if(playerHealth <= 0) return true;
-
 	updateEntities(monsters, supermonsters, medpacks, moneybags, spawnTracks);
 	displayBackgroundAndUI(window, backgroundSprite, pointTotal, healthDisplay, points, playerHealth);
 	displayGameObjects(window, spawnTracks, playerHealth);
@@ -271,6 +271,5 @@ bool GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThrea
 	else {
 		window.draw(aimSprite);
 	}
-
 	return false;
 }

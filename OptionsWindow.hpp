@@ -14,6 +14,6 @@ private:
 public:
 	OptionsWindow(int, int, sf::Font&, WebcamControl&);
 	void handleEvent(sf::Event, bool&);
-	void drawWindow(sf::RenderWindow&, WebcamControl&, Menu&, sf::Sprite&);
+	void drawWindow(sf::RenderWindow&, WebcamControl&, Menu&, sf::Sprite&, sf::Text notFoundMessage);
 	void initializeText(sf::Text&, sf::Font&, int, int, int, const String&, const sf::Color&);
 };
