@@ -1,7 +1,6 @@
 #include <iostream>
 #include "WebcamControl.hpp"
 #include "Menu.hpp"
-//#include "SliderSFML.hpp"
 #include "GameWindow.hpp"
 #include "OptionsWindow.hpp"
 
@@ -26,7 +25,7 @@ int main()
 
 	WebcamControl webcamThread;
 	sf::Thread thread(&WebcamControl::run, &webcamThread);
-	webcamThread.setThreshold(200);
+	webcamThread.setThreshold(255);
 	thread.launch();
 
 	sf::Text gunpointNotFound;
@@ -67,7 +66,6 @@ int main()
 	Menu mainMenu(WINDOW_WIDTH, WINDOW_HEIGHT, mainMenuLabels, sf::Color::White, sf::Color::Red);
 	Menu optionsMenu(WINDOW_WIDTH, WINDOW_HEIGHT, optionsMenuLabels, sf::Color::White, sf::Color::Red);
 	Menu gameOverMenu(WINDOW_WIDTH, WINDOW_HEIGHT, gameOverMenuLabels, sf::Color::White, sf::Color::Red);
-	static std::once_flag onceFlag;
 
 	GameWindow newGameWindow(WINDOW_WIDTH, font);
 	OptionsWindow newOptionsWindow(WINDOW_WIDTH, WINDOW_HEIGHT, font, webcamThread);
@@ -104,13 +102,13 @@ int main()
 				}
 			}
 
-			if (playPressed) { //gamewindow
+			if (playPressed) { 
 				gameWindow.handleEvent(event, spacePressed, playPressed, webcamThread);
 			}
-			else if (optionsPressed) { //optionswindow
+			else if (optionsPressed) { 
 				optionsWindow.handleEvent(event, optionsPressed);
 			}
-			else { //mainmenuwindow
+			else { 
 				if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Mouse::Left)
 				{
 					switch (mainMenu.GetPressedItem())
@@ -134,6 +132,13 @@ int main()
 		}
 		
 		aimSprite.setPosition(webcamThread.getX() - (aimSprite.getGlobalBounds().width / 2), webcamThread.getY() - (aimSprite.getGlobalBounds().height / 2));
+		if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
+			window.draw(gunpointNotFound);
+		}
+		else {
+			window.draw(aimSprite);
+		}
+
 		if (gameOver) {
 			window.clear();
 			gameOverMenu.draw(window, webcamThread);

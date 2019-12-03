@@ -16,6 +16,7 @@ void OptionsWindow::handleEvent(sf::Event event, bool& optionsPressed) {
 }
 
 void OptionsWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThread, Menu& mainMenu, sf::Sprite& aimSprite) {
+	currSliderValue = slider.getSliderValue();
 	if (currSliderValue != oldSliderValue)
 		webcamThread.setThreshold(currSliderValue);
 	window.clear();

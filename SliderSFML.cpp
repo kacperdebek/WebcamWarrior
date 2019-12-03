@@ -83,40 +83,6 @@ void SliderSFML::create(int min, int max)
 	minValue = min;
 	maxValue = max;
 }
-/*
-void SliderSFML::logic(sf::RenderWindow& window)
-{
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
-	{
-		if (sf::Mouse::getPosition(window).x >= xCord && sf::Mouse::getPosition(window).x <= xCord + axisWidth)
-		{
-			slider.setPosition(sf::Mouse::getPosition(window).x, yCord);
-			sliderValue = (minValue + ((slider.getPosition().x - xCord) / axisWidth * (maxValue - minValue)));
-		}
-		else if (sf::Mouse::getPosition(window).x >= (xCord + axisWidth) && sf::Mouse::getPosition(window).x <= (window.getPosition().x + window.getSize().x))
-		{
-			slider.setPosition(xCord + axisWidth, yCord);
-			sliderValue = maxValue;
-		}
-		else if (sf::Mouse::getPosition(window).x <= xCord && sf::Mouse::getPosition(window).x >= window.getPosition().x)
-		{
-			slider.setPosition(xCord, yCord);
-			sliderValue = minValue;
-		}
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && sliderValue > 0)
-	{
-		slider.setPosition(slider.getPosition().x - 1, yCord);
-		sliderValue--;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && sliderValue < 255)
-	{
-		slider.setPosition(slider.getPosition().x + 1, yCord);
-		sliderValue++;
-	}
-
-}
-*/
 void SliderSFML::logic(sf::RenderWindow& window)
 {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))

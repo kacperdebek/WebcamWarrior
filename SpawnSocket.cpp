@@ -34,7 +34,6 @@ void SpawnSocket::update(int& playerHealth) {
 
 void SpawnSocket::draw(sf::RenderWindow& window) {
 	if (this->isMounted) {
-		//this->getMonster().drawHitbox(window);
 		this->getMonster().draw(window);
 	}
 }
