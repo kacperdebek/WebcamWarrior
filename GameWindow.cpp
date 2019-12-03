@@ -20,7 +20,7 @@ void GameWindow::initializeText(sf::Text& text, sf::Font& font, int textSize, in
 }
 
 void GameWindow::setupGameLogic() {
-	
+
 	if (!buffer.loadFromFile("Pop.wav")) {
 		cout << "Couldn't load the sound file" << endl;
 	}
@@ -36,14 +36,14 @@ void GameWindow::setupGameLogic() {
 	}
 
 	initializeText(healthDisplay, font, 18, 10, windowWidth - 200, "HEALTH: " + to_string(playerHealth), sf::Color::White);
-	initializeText(pointTotal, font, 18, 10, 5, "SCORE: " + to_string(points), sf::Color::White); 
+	initializeText(pointTotal, font, 18, 10, 5, "SCORE: " + to_string(points), sf::Color::White);
 
 	//Monsters
 	for (int i = 0; i < MONSTER_COUNT; i++) {
 		monsters[i] = Monster(
 			1, // health points
 			10, // points per kill
-			10, // damage dealt to player
+			100,//10, // damage dealt to player
 			60, // hitbox radius
 			monsterSprite
 		);
@@ -119,7 +119,7 @@ int GameWindow::setupGameGraphics() {
 		return -5;
 	}
 
-	backgroundSprite.setTexture(backgroundTexture); 
+	backgroundSprite.setTexture(backgroundTexture);
 	monsterSprite.setTexture(monsterTexture);
 	supermonsterSprite.setTexture(supermonsterTexture);
 	medpackSprite.setTexture(medpackTexture);
@@ -257,8 +257,10 @@ void GameWindow::handleEvent(sf::Event event, bool& spacePressed, bool& playPres
 	}
 }
 
-void GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThread, sf::Sprite aimSprite)
+bool GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThread, sf::Sprite aimSprite)
 {
+	if(playerHealth <= 0) return true;
+
 	updateEntities(monsters, supermonsters, medpacks, moneybags, spawnTracks);
 	displayBackgroundAndUI(window, backgroundSprite, pointTotal, healthDisplay, points, playerHealth);
 	displayGameObjects(window, spawnTracks, playerHealth);
@@ -269,4 +271,6 @@ void GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThrea
 	else {
 		window.draw(aimSprite);
 	}
+
+	return false;
 }

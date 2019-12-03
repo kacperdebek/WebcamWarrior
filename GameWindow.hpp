@@ -40,6 +40,7 @@ private:
 	int points;
 	int positioner;
 	int windowWidth;
+	bool gameOverFlag;
 	SpawnTrack spawnTracks[SPAWN_TRACK_COUNT];
 
 public:
@@ -57,5 +58,5 @@ public:
 		Monster [MONEYBAG_COUNT],
 		SpawnTrack [SPAWN_TRACK_COUNT]);
 	void handleEvent(sf::Event, bool&, bool&, WebcamControl&);
-	void drawWindow(sf::RenderWindow&, WebcamControl&, sf::Sprite);
+	bool drawWindow(sf::RenderWindow&, WebcamControl&, sf::Sprite);
 };
