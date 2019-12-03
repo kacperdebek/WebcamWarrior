@@ -1,5 +1,4 @@
-#include "SliderSFML.h"
-
+#include "SliderSFML.hpp"
 
 SliderSFML::SliderSFML(int x, int y, int length)
 {
@@ -19,11 +18,11 @@ SliderSFML::SliderSFML(int x, int y, int length)
 	axis.setPosition(x, y);
 	axis.setOrigin(0, axisHeight / 2);
 	axis.setSize(sf::Vector2f(axisWidth, axisHeight));
-	axis.setFillColor(sf::Color(63,63,63));
+	axis.setFillColor(sf::Color(63, 63, 63));
 	slider.setPosition(x, y);
 	slider.setOrigin(sliderWidth / 2, sliderHeight / 2);
 	slider.setSize(sf::Vector2f(sliderWidth, sliderHeight));
-	slider.setFillColor(sf::Color(192,192,192));
+	slider.setFillColor(sf::Color(192, 192, 192));
 }
 
 sf::Text SliderSFML::returnText(int x, int y, std::string z, int fontSize)
@@ -40,8 +39,8 @@ void SliderSFML::create(int min, int max)
 	minValue = min;
 	maxValue = max;
 }
-
-void SliderSFML::logic(sf::RenderWindow &window)
+/*
+void SliderSFML::logic(sf::RenderWindow& window)
 {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 	{
@@ -50,12 +49,12 @@ void SliderSFML::logic(sf::RenderWindow &window)
 			slider.setPosition(sf::Mouse::getPosition(window).x, yCord);
 			sliderValue = (minValue + ((slider.getPosition().x - xCord) / axisWidth * (maxValue - minValue)));
 		}
-		else if (sf::Mouse::getPosition(window).x >= xCord)
+		else if (sf::Mouse::getPosition(window).x >= (xCord + axisWidth) && sf::Mouse::getPosition(window).x <= (window.getPosition().x + window.getSize().x))
 		{
 			slider.setPosition(xCord + axisWidth, yCord);
 			sliderValue = maxValue;
 		}
-		else
+		else if (sf::Mouse::getPosition(window).x <= xCord && sf::Mouse::getPosition(window).x >= window.getPosition().x)
 		{
 			slider.setPosition(xCord, yCord);
 			sliderValue = minValue;
@@ -71,7 +70,40 @@ void SliderSFML::logic(sf::RenderWindow &window)
 		slider.setPosition(slider.getPosition().x + 1, yCord);
 		sliderValue++;
 	}
-	
+
+}
+*/
+void SliderSFML::logic(sf::RenderWindow& window)
+{
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+	{
+		if (sf::Mouse::getPosition(window).x >= xCord && sf::Mouse::getPosition(window).x <= xCord + axisWidth)
+		{
+			slider.setPosition(sf::Mouse::getPosition(window).x, yCord);
+			sliderValue = (minValue + ((slider.getPosition().x - xCord) / axisWidth * (maxValue - minValue)));
+		}
+		else if (sf::Mouse::getPosition().x >= (xCord + axisWidth + window.getPosition().x) && sf::Mouse::getPosition().x <= (window.getPosition().x + window.getSize().x))
+		{
+			slider.setPosition(xCord + axisWidth, yCord);
+			sliderValue = maxValue;
+		}
+		else if (sf::Mouse::getPosition().x <= (xCord + window.getPosition().x) && sf::Mouse::getPosition().x >= (window.getPosition().x))
+		{
+			slider.setPosition(xCord, yCord);
+			sliderValue = minValue;
+		}
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && sliderValue > 0)
+	{
+		slider.setPosition(slider.getPosition().x - 1, yCord);
+		sliderValue--;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && sliderValue < 255)
+	{
+		slider.setPosition(slider.getPosition().x + 1, yCord);
+		sliderValue++;
+	}
+
 }
 
 float SliderSFML::getSliderValue()
@@ -87,7 +119,7 @@ void SliderSFML::setSliderValue(float newValue)
 		float diff = maxValue - minValue;
 		float diff2 = newValue - minValue;
 		float zzz = axisWidth / diff;
-		float posX = zzz*diff2;
+		float posX = zzz * diff2;
 		posX += xCord;
 		slider.setPosition(posX, yCord);
 	}
@@ -98,11 +130,11 @@ void SliderSFML::setSliderPercentValue(float newPercentValue)
 	if (newPercentValue >= 0 && newPercentValue <= 100)
 	{
 		sliderValue = newPercentValue / 100 * maxValue;
-		slider.setPosition(xCord + (axisWidth*newPercentValue / 100), yCord);
+		slider.setPosition(xCord + (axisWidth * newPercentValue / 100), yCord);
 	}
 }
 
-void SliderSFML::draw(sf::RenderWindow &window)
+void SliderSFML::draw(sf::RenderWindow& window)
 {
 	logic(window);
 	window.draw(returnText(xCord - 10, yCord + 5, std::to_string(minValue), 20));

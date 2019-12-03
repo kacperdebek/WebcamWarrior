@@ -1,4 +1,4 @@
-#include "SpawnSocket.h"
+#include "SpawnSocket.hpp"
 
 SpawnSocket::SpawnSocket() {
 	this->baseline = 0;

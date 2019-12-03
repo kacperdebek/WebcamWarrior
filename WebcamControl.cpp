@@ -1,40 +1,41 @@
 #include "WebcamControl.hpp"
+
 void WebcamControl::run()
 {
-    VideoCapture vcap;
-    Mat image;
-    Mat image_gray;
-    Mat result;
+	VideoCapture vcap;
+	Mat image;
+	Mat image_gray;
+	Mat result;
 	Mat res;
 
 	vector<vector<Point> >contours;
 	vector<Vec4i>hierarchy;
-    if (!vcap.open(0))
-    {
-        cout << "Error opening video stream or file" << endl;
-        return;
-    }
-    while (true)
-    {
-        if (!vcap.read(image))
-        {
-            cout << "No frame" << endl;
-            waitKey();
-        }
+	if (!vcap.open(0))
+	{
+		cout << "Error opening video stream or file" << endl;
+		return;
+	}
+	while (true)
+	{
+		if (!vcap.read(image))
+		{
+			cout << "No frame" << endl;
+			waitKey();
+		}
 		resize(image, image, Size(1280, 720));
-        flip(image, image, 1);
-        cvtColor(image, image_gray, COLOR_BGR2GRAY);
-        //threshold(image_gray, result, webcamThreshold, 255, THRESH_BINARY);
+		flip(image, image, 1);
+		cvtColor(image, image_gray, COLOR_BGR2GRAY);
+		//threshold(image_gray, result, webcamThreshold, 255, THRESH_BINARY);
 		threshold(image_gray, res, webcamThreshold, 255, THRESH_BINARY);
-        /*Moments m = moments(result, true);
-        x = m.m10 / m.m00;
-        y = m.m01 / m.m00;
-        Point p(x, y);
-        circle(result, p, 5, Scalar(128, 0, 0), -1);
+		/*Moments m = moments(result, true);
+		x = m.m10 / m.m00;
+		y = m.m01 / m.m00;
+		Point p(x, y);
+		circle(result, p, 5, Scalar(128, 0, 0), -1);
 		*/
 		int savedContour = -1;
 		double maxArea = 0.0;
-		findContours(res, contours, hierarchy, RETR_EXTERNAL,CHAIN_APPROX_SIMPLE, Point());
+		findContours(res, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point());
 		for (int i = 0; i < contours.size(); i++)
 		{
 			double area = contourArea(contours[i]);
@@ -43,7 +44,7 @@ void WebcamControl::run()
 				maxArea = area;
 				savedContour = i;
 			}
-			
+
 		}
 		Mat img(720, 1280, CV_8UC3, Scalar(0, 0, 0));
 		cvtColor(img, img, COLOR_BGR2GRAY);
@@ -53,20 +54,20 @@ void WebcamControl::run()
 		y = m2.m01 / m2.m00;
 		Point p2(x, y);
 		circle(img, p2, 5, Scalar(128, 0, 0), -1);
-		
-        //imshow("Cam", result);
+
+		//imshow("Cam", result);
 		imshow("Camv2", img);
-        if (waitKey(1) == 27)
-            break;
-    }
+		if (waitKey(1) == 27)
+			break;
+	}
 }
 int WebcamControl::getX()
 {
-    return this->x;
+	return this->x;
 }
 int WebcamControl::getY()
 {
-    return this->y;
+	return this->y;
 }
 void WebcamControl::setThreshold(int targetThreshold)
 {

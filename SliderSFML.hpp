@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML\Graphics.hpp>
-#include <iostream>
-#include "WebcamControl.hpp"
+#include "GenericCHeader.hpp"
+
 class SliderSFML
 {
 	sf::RectangleShape slider;

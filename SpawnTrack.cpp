@@ -1,4 +1,4 @@
-#include "SpawnTrack.h"
+#include "SpawnTrack.hpp"
 
 SpawnTrack::SpawnTrack() {
 	this->speed = 0;

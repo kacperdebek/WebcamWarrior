@@ -1,5 +1,6 @@
 #pragma once
-#include "WebcamControl.hpp"
+#include "SFMLHeader.hpp"
+#include "GenericCHeader.hpp"
 
 class Monster
 {

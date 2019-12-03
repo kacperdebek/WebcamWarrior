@@ -1,4 +1,4 @@
-#include "Monster.h"
+#include "Monster.hpp"
 Monster::Monster() {
 	this->isMounted = false;
 	this->cooldown = 0;
