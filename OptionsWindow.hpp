@@ -2,7 +2,6 @@
 #include "Menu.hpp"
 #include "SliderSFML.hpp"
 #include "GenericCHeader.hpp"
-#include "Menu.hpp"
 
 class OptionsWindow {
 private:

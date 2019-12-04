@@ -1,5 +1,4 @@
 #pragma once
-#include "SFMLHeader.hpp"
 #include "GenericCHeader.hpp"
 #include <opencv2/opencv.hpp>
 

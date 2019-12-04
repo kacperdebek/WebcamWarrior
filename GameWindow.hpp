@@ -50,8 +50,8 @@ public:
 	int setupGameGraphics();
 	void initializeText(sf::Text&, sf::Font&, int, int, int, const String&, const sf::Color&);
 	void displayBackgroundAndUI(sf::RenderWindow&, sf::Sprite&, sf::Text&, sf::Text&, int, int);
-	void displayGameObjects(sf::RenderWindow&, SpawnTrack(&)[SPAWN_TRACK_COUNT], int&);
-	bool checkForCollisions(WebcamControl&, int&, int&);
+	void displayGameObjects(sf::RenderWindow&, SpawnTrack(&)[SPAWN_TRACK_COUNT]);
+	bool checkForCollisions(WebcamControl&);
 	void updateEntities();
 	void handleEvent(sf::Event, bool&, bool&, WebcamControl&);
 	bool drawWindow(sf::RenderWindow&, WebcamControl&, sf::Sprite);

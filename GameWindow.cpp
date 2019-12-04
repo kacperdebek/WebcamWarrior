@@ -42,7 +42,7 @@ void GameWindow::setupGameLogic() {
 		monsters[i] = Monster(
 			1, // health points
 			10, // points per kill
-			10,//10, // damage dealt to player
+			10, // damage dealt to player
 			60, // hitbox radius
 			monsterSprite
 		);
@@ -133,20 +133,21 @@ void GameWindow::displayBackgroundAndUI(sf::RenderWindow& window,
 	window.draw(healthDisplay);
 }
 
-void GameWindow::displayGameObjects(sf::RenderWindow& window, SpawnTrack(&spawnTracks)[SPAWN_TRACK_COUNT], int& health) {
+void GameWindow::displayGameObjects(sf::RenderWindow& window, SpawnTrack(&spawnTracks)[SPAWN_TRACK_COUNT]) {
 	for (int i = 0; i < SPAWN_TRACK_COUNT; i++) {
-		spawnTracks[i].update(health);
+		spawnTracks[i].update(playerHealth);
 		spawnTracks[i].draw(window);
 	}
 }
 
-bool GameWindow::checkForCollisions(WebcamControl& webcamThread, int& points, int& health) {
+bool GameWindow::checkForCollisions(WebcamControl& webcamThread) {
 	for (int i = 0; i < SPAWN_TRACK_COUNT; i++) {
 		for (int j = 0; j < SPAWN_SOCKETS_PER_TRACK; j++) {
 			if (spawnTracks[i].sockets[j].checkCollision(webcamThread.getX(), webcamThread.getY(), 30)) {
-				int* shotEffect = spawnTracks[i].sockets[j].registerShot();
-				if (shotEffect[0] <= 0) health -= shotEffect[0];
-				points += shotEffect[1];
+				int shotEffect1, shotEffect2;
+				spawnTracks[i].sockets[j].registerShot(shotEffect1, shotEffect2);
+				if (shotEffect1 <= 0) playerHealth -= shotEffect1;
+				points += shotEffect2;
 				return true;
 			}
 		}
@@ -219,11 +220,11 @@ void GameWindow::updateEntities() {
 void GameWindow::handleEvent(sf::Event event, bool& spacePressed, bool& playPressed, WebcamControl& webcamThread) {
 	if (event.type == sf::Event::KeyReleased || event.type == sf::Event::MouseButtonPressed) {
 		if (event.key.code == sf::Keyboard::Space) {
-			if (checkForCollisions(webcamThread, points, playerHealth) && !spacePressed) {
+			if (checkForCollisions(webcamThread) && !spacePressed) {
 				spacePressed = true;
 				popSound.play();
 				cout << "Bullseye!" << endl;
-				points += 10;
+				//points += 10;
 			}
 			else if (!spacePressed && playPressed)
 			{
@@ -249,7 +250,7 @@ bool GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThrea
 	if(playerHealth <= 0) return true;
 	updateEntities();
 	displayBackgroundAndUI(window, backgroundSprite, pointTotal, healthDisplay, points, playerHealth);
-	displayGameObjects(window, spawnTracks, playerHealth);
+	displayGameObjects(window, spawnTracks);
 
 	if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
 		window.draw(gunpointNotFound);

@@ -22,8 +22,7 @@ class SpawnSocket
 		void mount(Monster&);
 		void unmount();
 		bool checkMount();
-		int* registerShot();
-
+		void SpawnSocket::registerShot(int& shotDetails1, int& shotDetails2);
 
 		bool checkCollision(int, int, int);
 		bool isOutOfWindow();

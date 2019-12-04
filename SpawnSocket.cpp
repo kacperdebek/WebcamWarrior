@@ -1,4 +1,5 @@
 #include "SpawnSocket.hpp"
+#include <vector>
 
 SpawnSocket::SpawnSocket() {
 	this->baseline = 0;
@@ -23,7 +24,7 @@ void SpawnSocket::update(int& playerHealth) {
 	if (this->positionX > 1290) {
 		this->positionX = -150;
 		if (this->isMounted && this->mountedMonster != NULL) {
-			playerHealth -= this->getMonster().getDamage();
+			if(this->getMonster().getDamage() > 0) playerHealth -= this->getMonster().getDamage();
 			this->unmount();
 		}
 	}
@@ -54,12 +55,15 @@ bool SpawnSocket::checkMount() {
 	return this->isMounted;
 }
 
-int* SpawnSocket::registerShot() {
-	int shotDetails[2];
-	shotDetails[0] = this->getMonster().getDamage();
-	shotDetails[1] = this->getMonster().getPoints();
-	if (this->getMonster().handleShot()) this->unmount();
-	return shotDetails;
+void SpawnSocket::registerShot(int& shotDetails1, int& shotDetails2) {
+	//int shotDetails[2];
+	shotDetails1 = this->getMonster().getDamage();
+	shotDetails2 = this->getMonster().getPoints();
+	/*
+	vector <int> shotDetails;
+	shotDetails.push_back(this->getMonster().getDamage());
+	shotDetails.push_back(this->getMonster().getPoints());
+	*/if (this->getMonster().handleShot()) this->unmount();
 }
 
 bool SpawnSocket::checkCollision(int aimX, int aimY, int aimRadius) {
