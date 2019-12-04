@@ -23,6 +23,7 @@ private:
 	Monster supermonsters[SUPERMONSTER_COUNT];
 	Monster medpacks[MEDPACK_COUNT];
 	Monster moneybags[MONEYBAG_COUNT];
+	SpawnTrack spawnTracks[SPAWN_TRACK_COUNT];
 
 	sf::Texture backgroundTexture;
 	sf::Texture monsterTexture;
@@ -42,22 +43,16 @@ private:
 	int windowWidth;
 	int windowHeight;
 	bool gameOverFlag;
-	SpawnTrack spawnTracks[SPAWN_TRACK_COUNT];
 
 public:
-	GameWindow();
 	GameWindow(int, int, sf::Font);
 	void setupGameLogic();
 	int setupGameGraphics();
 	void initializeText(sf::Text&, sf::Font&, int, int, int, const String&, const sf::Color&);
 	void displayBackgroundAndUI(sf::RenderWindow&, sf::Sprite&, sf::Text&, sf::Text&, int, int);
 	void displayGameObjects(sf::RenderWindow&, SpawnTrack(&)[SPAWN_TRACK_COUNT], int&);
-	bool checkForCollisions(SpawnTrack [SPAWN_TRACK_COUNT], WebcamControl&, int&, int&);
-	void updateEntities(Monster [MONSTER_COUNT], 
-		Monster [SUPERMONSTER_COUNT],	
-		Monster [MEDPACK_COUNT], 
-		Monster [MONEYBAG_COUNT],
-		SpawnTrack [SPAWN_TRACK_COUNT]);
+	bool checkForCollisions(WebcamControl&, int&, int&);
+	void updateEntities();
 	void handleEvent(sf::Event, bool&, bool&, WebcamControl&);
 	bool drawWindow(sf::RenderWindow&, WebcamControl&, sf::Sprite);
 };

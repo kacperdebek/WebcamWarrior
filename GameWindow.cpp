@@ -1,7 +1,5 @@
 #include "GameWindow.hpp"
 
-GameWindow::GameWindow() {}
-
 GameWindow::GameWindow(int width, int height, sf::Font appFont) {
 	windowWidth = width;
 	windowHeight = height;
@@ -44,18 +42,10 @@ void GameWindow::setupGameLogic() {
 		monsters[i] = Monster(
 			1, // health points
 			10, // points per kill
-			100,//10, // damage dealt to player
+			10,//10, // damage dealt to player
 			60, // hitbox radius
 			monsterSprite
 		);
-		while (true) {
-			SpawnSocket& helper = spawnTracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
-			if (!helper.checkMount() && helper.isOutOfWindow()) {
-				cout << "Monster mounted!\n";
-				helper.mount(monsters[i]);
-				break;
-			}
-		}
 	}
 	//Supermonsters
 	for (int i = 0; i < SUPERMONSTER_COUNT; i++) {
@@ -150,11 +140,11 @@ void GameWindow::displayGameObjects(sf::RenderWindow& window, SpawnTrack(&spawnT
 	}
 }
 
-bool GameWindow::checkForCollisions(SpawnTrack tracks[SPAWN_TRACK_COUNT], WebcamControl& webcamThread, int& points, int& health) {
+bool GameWindow::checkForCollisions(WebcamControl& webcamThread, int& points, int& health) {
 	for (int i = 0; i < SPAWN_TRACK_COUNT; i++) {
 		for (int j = 0; j < SPAWN_SOCKETS_PER_TRACK; j++) {
-			if (tracks[i].sockets[j].checkCollision(webcamThread.getX(), webcamThread.getY(), 30)) {
-				int* shotEffect = tracks[i].sockets[j].registerShot();
+			if (spawnTracks[i].sockets[j].checkCollision(webcamThread.getX(), webcamThread.getY(), 30)) {
+				int* shotEffect = spawnTracks[i].sockets[j].registerShot();
 				if (shotEffect[0] <= 0) health -= shotEffect[0];
 				points += shotEffect[1];
 				return true;
@@ -164,17 +154,13 @@ bool GameWindow::checkForCollisions(SpawnTrack tracks[SPAWN_TRACK_COUNT], Webcam
 	return false;
 }
 
-void GameWindow::updateEntities(Monster monsters[MONSTER_COUNT],
-	Monster supermonsters[SUPERMONSTER_COUNT],
-	Monster medpacks[MEDPACK_COUNT],
-	Monster moneybags[MONEYBAG_COUNT],
-	SpawnTrack tracks[SPAWN_TRACK_COUNT]) {
+void GameWindow::updateEntities() {
 	for (int i = 0; i < MONSTER_COUNT; i++) {
 		if (!monsters[i].checkMount() || monsters[i].hasCooldown() > 0) {
 			int memoryLimiter = 0;
 			while (true && memoryLimiter < 4) {
 				memoryLimiter++;
-				SpawnSocket& helper = tracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
+				SpawnSocket& helper = spawnTracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
 				if (!helper.checkMount() && helper.isOutOfWindow()) {
 					helper.mount(monsters[i]);
 
@@ -189,7 +175,7 @@ void GameWindow::updateEntities(Monster monsters[MONSTER_COUNT],
 			int memoryLimiter = 0;
 			while (true && memoryLimiter < 4) {
 				memoryLimiter++;
-				SpawnSocket& helper = tracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
+				SpawnSocket& helper = spawnTracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
 				if (!helper.checkMount() && helper.isOutOfWindow()) {
 					helper.mount(supermonsters[i]);
 
@@ -204,7 +190,7 @@ void GameWindow::updateEntities(Monster monsters[MONSTER_COUNT],
 			int memoryLimiter = 0;
 			while (true && memoryLimiter < 4) {
 				memoryLimiter++;
-				SpawnSocket& helper = tracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
+				SpawnSocket& helper = spawnTracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
 				if (!helper.checkMount() && helper.isOutOfWindow()) {
 					helper.mount(medpacks[i]);
 
@@ -219,7 +205,7 @@ void GameWindow::updateEntities(Monster monsters[MONSTER_COUNT],
 			int memoryLimiter = 0;
 			while (true && memoryLimiter < 4) {
 				memoryLimiter++;
-				SpawnSocket& helper = tracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
+				SpawnSocket& helper = spawnTracks[rand() % SPAWN_TRACK_COUNT].sockets[rand() % SPAWN_SOCKETS_PER_TRACK];
 				if (!helper.checkMount() && helper.isOutOfWindow()) {
 					helper.mount(moneybags[i]);
 
@@ -233,7 +219,7 @@ void GameWindow::updateEntities(Monster monsters[MONSTER_COUNT],
 void GameWindow::handleEvent(sf::Event event, bool& spacePressed, bool& playPressed, WebcamControl& webcamThread) {
 	if (event.type == sf::Event::KeyReleased || event.type == sf::Event::MouseButtonPressed) {
 		if (event.key.code == sf::Keyboard::Space) {
-			if (checkForCollisions(spawnTracks, webcamThread, points, playerHealth) && !spacePressed) {
+			if (checkForCollisions(webcamThread, points, playerHealth) && !spacePressed) {
 				spacePressed = true;
 				popSound.play();
 				cout << "Bullseye!" << endl;
@@ -261,7 +247,7 @@ void GameWindow::handleEvent(sf::Event event, bool& spacePressed, bool& playPres
 bool GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThread, sf::Sprite aimSprite)
 {
 	if(playerHealth <= 0) return true;
-	updateEntities(monsters, supermonsters, medpacks, moneybags, spawnTracks);
+	updateEntities();
 	displayBackgroundAndUI(window, backgroundSprite, pointTotal, healthDisplay, points, playerHealth);
 	displayGameObjects(window, spawnTracks, playerHealth);
 
