@@ -24,8 +24,6 @@ add_executable(Strzelnica
 	Monster.cpp 
 	SliderSFML.cpp
 	SliderSFML.hpp 
-	ScreenSelector.cpp 	
-	ScreenSelector.hpp
 	SFMLHeader.hpp
 	GenericCHeader.hpp
 )

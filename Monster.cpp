@@ -5,7 +5,7 @@ Monster::Monster() {
 	this->baseCooldown = 0;
 }
 
-Monster::Monster(int health, int points, int damage, int hitboxRadius, sf::Sprite& sprite) {
+Monster::Monster(int health, int points, int damage, int hitboxRadius, sf::Sprite& sprite, string sound) {
 	this->totalHealth = health;
 	this->health = health;
 	this->damage = damage;
@@ -19,6 +19,8 @@ Monster::Monster(int health, int points, int damage, int hitboxRadius, sf::Sprit
 	this->hitbox = sf::CircleShape();
 	this->hitbox.setRadius(hitboxRadius);
 	this->hitbox.setFillColor(sf::Color::Red);
+
+	this->deathSound.assign(sound);
 }
 
 
@@ -86,3 +88,6 @@ int Monster::getPoints() {
 	return this->pointsValue;
 }
 
+string Monster::getDeathSound() {
+	return this->deathSound;
+}

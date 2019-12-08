@@ -12,8 +12,13 @@ class GameWindow {
 private:
 	sf::Font font;
 
-	sf::SoundBuffer buffer;
-	sf::Sound popSound;
+	sf::SoundBuffer deathSoundBuffer;
+	sf::SoundBuffer shootSoundBuffer1;
+	sf::SoundBuffer shootSoundBuffer2;
+
+	sf::Sound deathSound;
+	sf::Sound shootSound1;
+	sf::Sound shootSound2;
 
 	sf::Text healthDisplay;
 	sf::Text pointTotal;
@@ -55,4 +60,5 @@ public:
 	void updateEntities();
 	void handleEvent(sf::Event, bool&, bool&, WebcamControl&);
 	bool drawWindow(sf::RenderWindow&, WebcamControl&, sf::Sprite);
+	void GunShot();
 };

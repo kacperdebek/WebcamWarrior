@@ -55,13 +55,6 @@ int main()
 	aimSprite.setTexture(aimTexture);
 
 	initializeTexts(gunpointNotFound, font, 26, (WINDOW_HEIGHT / 2), (WINDOW_WIDTH / 3), "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
-	sf::SoundBuffer buffer;
-	if (!buffer.loadFromFile("Pop.wav")) {
-		cout << "Couldn't load the sound file" << endl;
-		return -1;
-	}
-	sf::Sound popSound;
-	popSound.setBuffer(buffer);
 
 	sf::Time dt;
 	bool spacePressed = false;
@@ -80,7 +73,7 @@ int main()
 	GameWindow gameWindow = newGameWindow;
 	OptionsWindow optionsWindow = newOptionsWindow;
 	
-	mainMenu.playMenuTheme();
+	//mainMenu.playMenuTheme();
 	while (window.isOpen())
 	{
 		sf::Event event;

@@ -21,10 +21,12 @@ private:
 	int health;
 	int pointsValue;
 	int damage;
+
+	string deathSound;
 public:
 
 	Monster();
-	Monster(int, int, int, int, sf::Sprite&);
+	Monster(int, int, int, int, sf::Sprite&, string);
 	void updatePosition(int, int);
 	void drawHitbox(sf::RenderWindow&);
 	void draw(sf::RenderWindow&);
@@ -39,5 +41,5 @@ public:
 	void setMounted();
 	int getDamage();
 	int getPoints();
-
+	string getDeathSound();
 };

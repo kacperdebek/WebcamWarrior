@@ -1,6 +1,8 @@
 #include "GameWindow.hpp"
 
 GameWindow::GameWindow(int width, int height, sf::Font appFont) {
+	srand(time(NULL));
+
 	windowWidth = width;
 	windowHeight = height;
 	font = appFont;
@@ -19,11 +21,16 @@ void GameWindow::initializeText(sf::Text& text, sf::Font& font, int textSize, in
 }
 
 void GameWindow::setupGameLogic() {
-
-	if (!buffer.loadFromFile("Pop.wav")) {
+	
+	if (!shootSoundBuffer1.loadFromFile("flaunch.wav")) {
 		cout << "Couldn't load the sound file" << endl;
 	}
-	popSound.setBuffer(buffer);
+	shootSound1.setBuffer(shootSoundBuffer1);
+
+	if (!shootSoundBuffer2.loadFromFile("rlaunch.wav")) {
+		cout << "Couldn't load the sound file" << endl;
+	}
+	shootSound2.setBuffer(shootSoundBuffer2);
 
 	playerHealth = 100;
 	points = 0;
@@ -44,7 +51,8 @@ void GameWindow::setupGameLogic() {
 			10, // points per kill
 			10, // damage dealt to player
 			60, // hitbox radius
-			monsterSprite
+			monsterSprite,
+			"monster_death.wav"
 		);
 		monsters[i].setCooldown(0 + rand() % 20);
 	}
@@ -56,7 +64,8 @@ void GameWindow::setupGameLogic() {
 				20, // points per kill
 				15, // damage dealt to player
 				60, // hitbox radius
-				supermonsterSprite
+				supermonsterSprite,
+				"supermonster_death.wav"
 			);
 			supermonsters[i].setCooldown(300 + rand() % 700);
 		}
@@ -69,7 +78,8 @@ void GameWindow::setupGameLogic() {
 				0, // points per kill
 				-20, // damage dealt to player
 				60, // hitbox radius
-				medpackSprite
+				medpackSprite,
+				"Pop.wav"
 			);
 			medpacks[i].setCooldown(1500 + rand() % 3500);
 		}
@@ -82,7 +92,8 @@ void GameWindow::setupGameLogic() {
 				100, // points per kill
 				0, // damage dealt to player
 				60, // hitbox radius
-				moneybagSprite
+				moneybagSprite,
+				"Pop.wav"
 			);
 			moneybags[i].setCooldown(2500 + rand() % 4500);
 		}
@@ -146,9 +157,18 @@ bool GameWindow::checkForCollisions(WebcamControl& webcamThread) {
 		for (int j = 0; j < SPAWN_SOCKETS_PER_TRACK; j++) {
 			if (spawnTracks[i].sockets[j].checkCollision(webcamThread.getX(), webcamThread.getY(), 30)) {
 				int shotEffect1, shotEffect2;
-				spawnTracks[i].sockets[j].registerShot(shotEffect1, shotEffect2);
+
+				string name = spawnTracks[i].sockets[j].registerShot(shotEffect1, shotEffect2);
+				
 				if (shotEffect1 <= 0) playerHealth -= shotEffect1;
 				points += shotEffect2;
+
+				if (!deathSoundBuffer.loadFromFile(name)) {
+					cout << "Couldn't load the sound file" << endl;
+				}
+				deathSound.setBuffer(deathSoundBuffer);
+				deathSound.play();
+
 				return true;
 			}
 		}
@@ -221,9 +241,12 @@ void GameWindow::updateEntities() {
 void GameWindow::handleEvent(sf::Event event, bool& spacePressed, bool& playPressed, WebcamControl& webcamThread) {
 	if (event.type == sf::Event::KeyReleased || event.type == sf::Event::MouseButtonPressed) {
 		if (event.key.code == sf::Keyboard::Space) {
+			//shootSound.play();
+			GunShot();
+
 			if (checkForCollisions(webcamThread) && !spacePressed) {
 				spacePressed = true;
-				popSound.play();
+				//popSound.play();
 				cout << "Bullseye!" << endl;
 				//points += 10;
 			}
@@ -260,4 +283,9 @@ bool GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThrea
 		window.draw(aimSprite);
 	}
 	return false;
+}
+
+void GameWindow::GunShot() {
+	if (rand() % 2) shootSound1.play();
+	else shootSound2.play();
 }
