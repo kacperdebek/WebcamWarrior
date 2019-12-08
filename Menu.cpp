@@ -17,6 +17,10 @@ Menu::Menu(float width, float height, vector<string> labelList, sf::Color mainCo
 		cout << "Couldn't load menu background image" << endl;
 		return;
 	}
+	if (!this->menuTheme.openFromFile("main_theme.ogg")) {
+		cout << "Couldn't load menu music" << endl;
+		return;
+	}
 	this->width = width;
 	this->height = height;
 	this->selectedColor = selectedColor;
@@ -72,4 +76,13 @@ void Menu::draw(sf::RenderWindow &window, WebcamControl webcamThread)
 sf::Sprite Menu::getBackground()
 {
 	return this->menuBackgroundSprite;
+}
+
+void Menu::playMenuTheme() {
+	this->menuTheme.play();
+	this->menuTheme.setLoop(true);
+}
+
+void Menu::stopMenuTheme() {
+	this->menuTheme.stop();
 }

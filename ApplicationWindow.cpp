@@ -79,7 +79,8 @@ int main()
 	OptionsWindow newOptionsWindow(WINDOW_WIDTH, WINDOW_HEIGHT, font, webcamThread);
 	GameWindow gameWindow = newGameWindow;
 	OptionsWindow optionsWindow = newOptionsWindow;
-
+	
+	mainMenu.playMenuTheme();
 	while (window.isOpen())
 	{
 		sf::Event event;
