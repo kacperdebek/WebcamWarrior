@@ -9,6 +9,7 @@ private:
 	int centerY;
 	int hitboxRadius;
 
+	int baseCooldown;
 	int cooldown;
 	bool isMounted;
 

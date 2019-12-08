@@ -2,14 +2,16 @@
 Monster::Monster() {
 	this->isMounted = false;
 	this->cooldown = 0;
+	this->baseCooldown = 0;
 }
 
-Monster::Monster(int health, int points, int damage, int hitboxRadius, sf::Sprite& sprite){
+Monster::Monster(int health, int points, int damage, int hitboxRadius, sf::Sprite& sprite) {
 	this->totalHealth = health;
 	this->health = health;
 	this->damage = damage;
 	this->pointsValue = points;
 	this->cooldown = 0;
+	this->baseCooldown = 0;
 	this->isMounted = false;
 	this->hitboxRadius = hitboxRadius;
 
@@ -43,7 +45,7 @@ void Monster::setMounted() {
 
 void Monster::unmount() {
 	this->isMounted = false;
-	this->cooldown = 10;
+	this->cooldown = this->baseCooldown;
 }
 
 bool Monster::checkMount() {
@@ -72,6 +74,7 @@ bool Monster::hasCooldown() {
 }
 
 void Monster::setCooldown(int cd) {
+	this->baseCooldown = cd;
 	this->cooldown = cd;
 }
 

@@ -46,6 +46,7 @@ void GameWindow::setupGameLogic() {
 			60, // hitbox radius
 			monsterSprite
 		);
+		monsters[i].setCooldown(0 + rand() % 20);
 	}
 	//Supermonsters
 	for (int i = 0; i < SUPERMONSTER_COUNT; i++) {
@@ -57,7 +58,7 @@ void GameWindow::setupGameLogic() {
 				60, // hitbox radius
 				supermonsterSprite
 			);
-			supermonsters[i].setCooldown(500);
+			supermonsters[i].setCooldown(300 + rand() % 700);
 		}
 	}
 	//Medpacks
@@ -70,7 +71,7 @@ void GameWindow::setupGameLogic() {
 				60, // hitbox radius
 				medpackSprite
 			);
-			medpacks[i].setCooldown(150000);
+			medpacks[i].setCooldown(1500 + rand() % 3500);
 		}
 	}
 	//Moneybags
@@ -83,7 +84,7 @@ void GameWindow::setupGameLogic() {
 				60, // hitbox radius
 				moneybagSprite
 			);
-			moneybags[i].setCooldown(250000);
+			moneybags[i].setCooldown(2500 + rand() % 4500);
 		}
 	}
 }
@@ -157,7 +158,7 @@ bool GameWindow::checkForCollisions(WebcamControl& webcamThread) {
 
 void GameWindow::updateEntities() {
 	for (int i = 0; i < MONSTER_COUNT; i++) {
-		if (!monsters[i].checkMount() || monsters[i].hasCooldown() > 0) {
+		if (!monsters[i].checkMount() && !monsters[i].hasCooldown()) {
 			int memoryLimiter = 0;
 			while (true && memoryLimiter < 4) {
 				memoryLimiter++;
@@ -172,7 +173,7 @@ void GameWindow::updateEntities() {
 	}
 
 	for (int i = 0; i < SUPERMONSTER_COUNT; i++) {
-		if (!supermonsters[i].checkMount() || supermonsters[i].hasCooldown() > 0) {
+		if (!supermonsters[i].checkMount() && !supermonsters[i].hasCooldown()) {
 			int memoryLimiter = 0;
 			while (true && memoryLimiter < 4) {
 				memoryLimiter++;
@@ -187,7 +188,7 @@ void GameWindow::updateEntities() {
 	}
 
 	for (int i = 0; i < MEDPACK_COUNT; i++) {
-		if (!medpacks[i].checkMount() || medpacks[i].hasCooldown() > 0) {
+		if (!medpacks[i].checkMount() && !medpacks[i].hasCooldown()) {
 			int memoryLimiter = 0;
 			while (true && memoryLimiter < 4) {
 				memoryLimiter++;
@@ -202,7 +203,7 @@ void GameWindow::updateEntities() {
 	}
 
 	for (int i = 0; i < MONEYBAG_COUNT; i++) {
-		if (!moneybags[i].checkMount() || moneybags[i].hasCooldown() > 0) {
+		if (!moneybags[i].checkMount() && !moneybags[i].hasCooldown()) {
 			int memoryLimiter = 0;
 			while (true && memoryLimiter < 4) {
 				memoryLimiter++;
