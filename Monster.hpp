@@ -16,7 +16,10 @@ private:
 	sf::Sprite sprite;
 	sf::RectangleShape border;
 	sf::CircleShape hitbox;
-
+	
+	int animationCounter;
+	sf::IntRect rectSourceSprite;
+	
 	int totalHealth;
 	int health;
 	int pointsValue;
@@ -34,6 +37,7 @@ public:
 	void unmount();
 	bool checkMount();
 	bool handleShot();
+	void updateSprite();
 
 	int getHitboxRadius();
 	bool hasCooldown();

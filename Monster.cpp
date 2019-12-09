@@ -15,12 +15,17 @@ Monster::Monster(int health, int points, int damage, int hitboxRadius, sf::Sprit
 	this->isMounted = false;
 	this->hitboxRadius = hitboxRadius;
 
+	this->rectSourceSprite = sf::IntRect(0, 0, 128, 128);
+
 	this->sprite = sprite;
+	this->sprite.setTextureRect(this->rectSourceSprite);
+
 	this->hitbox = sf::CircleShape();
 	this->hitbox.setRadius(hitboxRadius);
 	this->hitbox.setFillColor(sf::Color::Red);
 
 	this->deathSound.assign(sound);
+	this->animationCounter = 0;
 }
 
 
@@ -30,7 +35,18 @@ void Monster::updatePosition(int x, int y) {
 }
 
 void Monster::draw(sf::RenderWindow& window) {
+	if (this->rectSourceSprite.left == 384) {
+		this->rectSourceSprite.left = 0;
+		this->rectSourceSprite.top += 128;
+		if (this->rectSourceSprite.top == 384) {
+			this->rectSourceSprite.top = 0;
+		}
+	}
+	else this->rectSourceSprite.left += 128;
+	this->sprite.setTextureRect(this->rectSourceSprite);
 	this->sprite.setPosition(this->centerX, this->centerY);
+
+	cout << this->sprite.getPosition().x << " " << this->sprite.getPosition().y << endl; 
 	window.draw(this->sprite);
 }
 
@@ -90,4 +106,18 @@ int Monster::getPoints() {
 
 string Monster::getDeathSound() {
 	return this->deathSound;
+}
+
+
+void Monster::updateSprite() {
+	//if (this->rectSourceSprite.left == 384) {
+	//	this->rectSourceSprite.left = 0;
+	//	this->rectSourceSprite.top += 128;
+	//	if (this->rectSourceSprite.top == 384) {
+	//		this->rectSourceSprite.top = 0;
+	//	}
+	//}
+	//else this->rectSourceSprite.left += 128;
+
+	//this->sprite.setTextureRect(this->rectSourceSprite);
 }

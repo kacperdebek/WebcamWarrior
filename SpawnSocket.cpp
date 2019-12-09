@@ -93,3 +93,7 @@ int SpawnSocket::getBaseline() {
 int SpawnSocket::getPositionX() {
 	return this->positionX;
 }
+
+void SpawnSocket::updateAnimation() {
+	this->getMonster().updateSprite();
+}

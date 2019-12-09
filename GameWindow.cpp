@@ -32,6 +32,9 @@ void GameWindow::setupGameLogic() {
 	}
 	shootSound2.setBuffer(shootSoundBuffer2);
 
+	shootSound1.setVolume(80);
+	shootSound2.setVolume(80);
+
 	playerHealth = 100;
 	points = 0;
 
@@ -105,6 +108,7 @@ int GameWindow::setupGameGraphics() {
 		cout << "Couldn't load the background image" << endl;
 		return -1;
 	}
+	/*
 	if (!monsterTexture.loadFromFile("testmonster.png")) {
 		cout << "Couldn't load the monster texture" << endl;
 		return -2;
@@ -121,7 +125,24 @@ int GameWindow::setupGameGraphics() {
 		cout << "Couldn't load the moneybag texture" << endl;
 		return -5;
 	}
-
+	*/
+	if (!monsterTexture.loadFromFile("spritesheet.png")) {
+		cout << "Couldn't load the monster texture" << endl;
+		return -2;
+	}
+	if (!supermonsterTexture.loadFromFile("spritesheet.png")) {
+		cout << "Couldn't load the super monster texture" << endl;
+		return -3;
+	}
+	if (!medpackTexture.loadFromFile("spritesheet.png")) {
+		cout << "Couldn't load the medpack texture" << endl;
+		return -4;
+	}
+	if (!moneybagTexture.loadFromFile("spritesheet.png")) {
+		cout << "Couldn't load the moneybag texture" << endl;
+		return -5;
+	}
+	
 	backgroundSprite.setTexture(backgroundTexture);
 	monsterSprite.setTexture(monsterTexture);
 	supermonsterSprite.setTexture(supermonsterTexture);
@@ -150,6 +171,34 @@ void GameWindow::displayGameObjects(sf::RenderWindow& window, SpawnTrack(&spawnT
 		spawnTracks[i].update(playerHealth);
 		spawnTracks[i].draw(window);
 	}
+}
+
+void GameWindow::updateAnimation() {
+	for (int i = 0; i < SPAWN_TRACK_COUNT; i++) {
+		spawnTracks[i].updateAnimation();
+	}
+	/*
+	if (animationCounter) animationRect.top += 128;
+	else animationRect.top -= 128;
+	
+	cout << "1" << endl;
+
+		if (animationRect.left == 384) {
+			animationRect.left = 0;
+			animationRect.top += 128;
+			if (animationRect.top == 384) {
+				animationRect.top = 0;
+			}
+		}
+		else animationRect.left += 128;
+		
+	monsterSprite.setTextureRect(animationRect);
+	supermonsterSprite.setTextureRect(animationRect);
+	medpackSprite.setTextureRect(animationRect);
+	moneybagSprite.setTextureRect(animationRect);
+
+	animationCounter = !animationCounter;
+	*/
 }
 
 bool GameWindow::checkForCollisions(WebcamControl& webcamThread) {
@@ -269,8 +318,12 @@ void GameWindow::handleEvent(sf::Event event, bool& spacePressed, bool& playPres
 	}
 }
 
-bool GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThread, sf::Sprite aimSprite)
+bool GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThread, sf::Sprite aimSprite, sf::Clock &animationTimer)
 {
+	if (animationTimer.getElapsedTime().asMilliseconds() > 150) {
+		updateAnimation();
+	}
+	cout << "2" << endl;
 	if(playerHealth <= 0) return true;
 	updateEntities();
 	displayBackgroundAndUI(window, backgroundSprite, pointTotal, healthDisplay, points, playerHealth);

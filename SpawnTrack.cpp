@@ -31,3 +31,9 @@ void SpawnTrack::draw(sf::RenderWindow& window) {
 		this->sockets[i].draw(window);
 	}
 }
+
+void SpawnTrack::updateAnimation() {
+	for (int i = 0; i < SPAWN_SOCKETS_PER_TRACK; i++) {
+		this->sockets[i].updateAnimation();
+	}
+}

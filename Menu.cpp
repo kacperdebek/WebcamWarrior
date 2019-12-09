@@ -21,6 +21,7 @@ Menu::Menu(float width, float height, vector<string> labelList, sf::Color mainCo
 		cout << "Couldn't load menu music" << endl;
 		return;
 	}
+	menuTheme.setVolume(70);
 	this->width = width;
 	this->height = height;
 	this->selectedColor = selectedColor;

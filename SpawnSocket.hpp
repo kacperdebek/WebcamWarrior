@@ -28,5 +28,6 @@ class SpawnSocket
 		bool isOutOfWindow();
 		Monster& getMonster();
 		int getPositionX();
-		int getBaseline();
+		int getBaseline(); 
+		void updateAnimation();
 };

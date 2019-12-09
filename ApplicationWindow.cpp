@@ -27,7 +27,34 @@ void showMessageOrAim(WebcamControl& webcamThread, sf::RenderWindow& window, sf:
 }
 int main()
 {
+	/*
+
+	sf::Texture spriteSheetTexture;
+	if (!spriteSheetTexture.loadFromFile("spritesheet.png")) {
+		cout << "Couldn't load the aim texture" << endl;
+		return -1;
+	}
+	sf::IntRect rectSourceSprite(0, 0, 128, 128);
+	sf::Sprite spriteSheetSprite(spriteSheetTexture, rectSourceSprite);
+	
+	if (animationTimer.getElapsedTime().asMilliseconds() > 150) {
+		if (rectSourceSprite.left == 384) {
+			rectSourceSprite.left = 0;
+			rectSourceSprite.top += 128;
+			if (rectSourceSprite.top == 384) {
+				rectSourceSprite.top = 0;
+			}
+		}
+		else rectSourceSprite.left += 128;
+		spriteSheetSprite.setTextureRect(rectSourceSprite);
+		animationTimer.restart();
+	}
+	window.draw(spriteSheetSprite);
+	*/
+
+
 	srand(time(NULL));
+	sf::Clock animationTimer;
 	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Strzelnica");
 	window.setFramerateLimit(60);
 
@@ -73,7 +100,7 @@ int main()
 	GameWindow gameWindow = newGameWindow;
 	OptionsWindow optionsWindow = newOptionsWindow;
 	
-	//mainMenu.playMenuTheme();
+	mainMenu.playMenuTheme();
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -144,7 +171,7 @@ int main()
 		else if (playPressed)
 		{
 			window.clear();
-			gameOver = gameWindow.drawWindow(window, webcamThread, aimSprite);
+			gameOver = gameWindow.drawWindow(window, webcamThread, aimSprite, animationTimer);
 		}
 		else if (optionsPressed)
 		{
