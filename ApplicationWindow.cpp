@@ -159,29 +159,25 @@ int main()
 				}
 			}
 		}
-		
-		aimSprite.setPosition(webcamThread.getX() - (aimSprite.getGlobalBounds().width / 2), webcamThread.getY() - (aimSprite.getGlobalBounds().height / 2));
-		showMessageOrAim(webcamThread, window, gunpointNotFound, aimSprite);
-
+		aimSprite.setPosition(webcamThread.getX() - (aimSprite.getGlobalBounds().width / 2), webcamThread.getY() - (aimSprite.getGlobalBounds().height / 2));	
 		if (gameOver) {
 			window.clear();
-			gameOverMenu.draw(window, webcamThread);
-			showMessageOrAim(webcamThread, window, gunpointNotFound, aimSprite);
+			gameOverMenu.draw(window);
 		}
 		else if (playPressed)
 		{
 			window.clear();
+			showMessageOrAim(webcamThread, window, gunpointNotFound, aimSprite);
 			gameOver = gameWindow.drawWindow(window, webcamThread, aimSprite, animationTimer);
 		}
 		else if (optionsPressed)
 		{
-			optionsWindow.drawWindow(window, webcamThread, mainMenu, aimSprite, gunpointNotFound);
+			optionsWindow.drawWindow(window, webcamThread, mainMenu);
 		}
 		else
 		{		
 			window.clear();
-			mainMenu.draw(window, webcamThread);
-			showMessageOrAim(webcamThread, window, gunpointNotFound, aimSprite);
+			mainMenu.draw(window);
 		}
 		window.display();
 	}

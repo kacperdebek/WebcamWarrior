@@ -48,7 +48,7 @@ Menu::~Menu()
 	delete[] menu;
 }
 
-void Menu::draw(sf::RenderWindow &window, WebcamControl webcamThread)
+void Menu::draw(sf::RenderWindow &window)
 {
 	bool itemIsSelected = false;
 	window.draw(menuBackgroundSprite);
@@ -56,8 +56,7 @@ void Menu::draw(sf::RenderWindow &window, WebcamControl webcamThread)
 	{
 		menuButtonSprite.setPosition(sf::Vector2f((this->width / 2) - 50, this->height / (numOfLabels + 1) * (i + 1)));
 		window.draw(menuButtonSprite);
-		if((menu[i].getGlobalBounds().contains(webcamThread.getX(), webcamThread.getY())) || 
-			(menu[i].getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y)))
+		if((menu[i].getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y)))
 		{
 			menu[i].setColor(selectedColor);
 			selectedItemIndex = i;
