@@ -31,11 +31,14 @@ private:
 	SpawnTrack spawnTracks[SPAWN_TRACK_COUNT];
 
 	sf::Texture backgroundTexture;
+	sf::Texture backgroundTexture2;
 	sf::Texture monsterTexture;
 	sf::Texture supermonsterTexture;
 	sf::Texture medpackTexture;
 	sf::Texture moneybagTexture;
 	
+	sf::IntRect backgroundRect;
+
 	sf::Sprite backgroundSprite;
 	sf::Sprite monsterSprite;
 	sf::Sprite supermonsterSprite;
@@ -48,6 +51,7 @@ private:
 	int windowWidth;
 	int windowHeight;
 	bool gameOverFlag;
+	int counter;
 
 public:
 	GameWindow(int, int, sf::Font);

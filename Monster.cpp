@@ -46,7 +46,7 @@ void Monster::draw(sf::RenderWindow& window) {
 	this->sprite.setTextureRect(this->rectSourceSprite);
 	this->sprite.setPosition(this->centerX, this->centerY);
 
-	cout << this->sprite.getPosition().x << " " << this->sprite.getPosition().y << endl; 
+	//cout << this->sprite.getPosition().x << " " << this->sprite.getPosition().y << endl; 
 	window.draw(this->sprite);
 }
 

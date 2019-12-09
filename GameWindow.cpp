@@ -21,7 +21,8 @@ void GameWindow::initializeText(sf::Text& text, sf::Font& font, int textSize, in
 }
 
 void GameWindow::setupGameLogic() {
-	
+	counter = 0;
+
 	if (!shootSoundBuffer1.loadFromFile("flaunch.wav")) {
 		cout << "Couldn't load the sound file" << endl;
 	}
@@ -104,7 +105,7 @@ void GameWindow::setupGameLogic() {
 }
 
 int GameWindow::setupGameGraphics() {
-	if (!backgroundTexture.loadFromFile("background.jpg")) {
+	if (!backgroundTexture.loadFromFile("bgspritesheet.png")) {
 		cout << "Couldn't load the background image" << endl;
 		return -1;
 	}
@@ -149,6 +150,9 @@ int GameWindow::setupGameGraphics() {
 	medpackSprite.setTexture(medpackTexture);
 	moneybagSprite.setTexture(moneybagTexture);
 
+	backgroundRect = sf::IntRect(0, 0, 1280, 720);
+	backgroundSprite.setTextureRect(backgroundRect);
+
 	return 0;
 }
 
@@ -161,6 +165,21 @@ void GameWindow::displayBackgroundAndUI(sf::RenderWindow& window,
 	window.clear();
 	pointTotal.setString("POINTS: " + to_string(points));
 	healthDisplay.setString("HEALTH: " + to_string(health));
+
+	if(counter++ == 25) {
+		if (backgroundRect.left == 1280) {
+			backgroundRect.left = 0;
+			backgroundRect.top += 720; 
+			if (backgroundRect.top == (720 * 4)) {
+				backgroundRect.top = 0;
+			}
+		}
+		else backgroundRect.left += 1280;
+		counter = 0;
+	}
+
+	backgroundSprite.setTextureRect(this->backgroundRect);
+
 	window.draw(backgroundSprite);
 	window.draw(pointTotal);
 	window.draw(healthDisplay);
@@ -323,7 +342,6 @@ bool GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThrea
 	if (animationTimer.getElapsedTime().asMilliseconds() > 150) {
 		updateAnimation();
 	}
-	cout << "2" << endl;
 	if(playerHealth <= 0) return true;
 	updateEntities();
 	displayBackgroundAndUI(window, backgroundSprite, pointTotal, healthDisplay, points, playerHealth);

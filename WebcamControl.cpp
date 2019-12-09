@@ -58,7 +58,7 @@ void WebcamControl::run()
 		circle(img, p2, 5, Scalar(128, 0, 0), -1);
 
 		//imshow("Cam", result);
-		imshow("Camv2", img);
+		//imshow("Camv2", img);
 		if (waitKey(1) == 27)
 			break;
 	}
