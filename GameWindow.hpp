@@ -2,6 +2,7 @@
 #include "WebcamControl.hpp"
 #include "SpawnTrack.hpp"
 #include "Monster.hpp"
+#include "Explosion.hpp"
 
 #define MONSTER_COUNT 5
 #define SUPERMONSTER_COUNT 2
@@ -31,11 +32,11 @@ private:
 	SpawnTrack spawnTracks[SPAWN_TRACK_COUNT];
 
 	sf::Texture backgroundTexture;
-	sf::Texture backgroundTexture2;
 	sf::Texture monsterTexture;
 	sf::Texture supermonsterTexture;
 	sf::Texture medpackTexture;
 	sf::Texture moneybagTexture;
+	sf::Texture explosionTexture;
 	
 	sf::IntRect backgroundRect;
 
@@ -44,6 +45,8 @@ private:
 	sf::Sprite supermonsterSprite;
 	sf::Sprite medpackSprite;
 	sf::Sprite moneybagSprite;
+
+	list<Explosion> explosions;
 
 	int playerHealth;
 	int points;

@@ -27,32 +27,6 @@ void showMessageOrAim(WebcamControl& webcamThread, sf::RenderWindow& window, sf:
 }
 int main()
 {
-	/*
-
-	sf::Texture spriteSheetTexture;
-	if (!spriteSheetTexture.loadFromFile("spritesheet.png")) {
-		cout << "Couldn't load the aim texture" << endl;
-		return -1;
-	}
-	sf::IntRect rectSourceSprite(0, 0, 128, 128);
-	sf::Sprite spriteSheetSprite(spriteSheetTexture, rectSourceSprite);
-	
-	if (animationTimer.getElapsedTime().asMilliseconds() > 150) {
-		if (rectSourceSprite.left == 384) {
-			rectSourceSprite.left = 0;
-			rectSourceSprite.top += 128;
-			if (rectSourceSprite.top == 384) {
-				rectSourceSprite.top = 0;
-			}
-		}
-		else rectSourceSprite.left += 128;
-		spriteSheetSprite.setTextureRect(rectSourceSprite);
-		animationTimer.restart();
-	}
-	window.draw(spriteSheetSprite);
-	*/
-
-
 	srand(time(NULL));
 	sf::Clock animationTimer;
 	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Strzelnica");
@@ -70,7 +44,7 @@ int main()
 	sf::Sprite aimSprite;
 
 
-	if (!font.loadFromFile("Arial.ttf")) {
+	if (!font.loadFromFile("DisposableDroidBB.ttf")) {
 		cout << "Couldn't load the font" << endl;
 		return -1;
 	}
@@ -88,9 +62,9 @@ int main()
 	bool playPressed = false;
 	bool optionsPressed = false;
 	bool gameOver = false;
-	vector<string> mainMenuLabels = { "Play", "Options", "Exit" };
+	vector<string> mainMenuLabels = { "PLAY", "OPTIONS", "EXIT" };
 	vector<string> optionsMenuLabels = { "Template" };
-	vector<string> gameOverMenuLabels = { "Play again", "Quit game" };
+	vector<string> gameOverMenuLabels = { "PLAY AGAIN", "QUIT GAME" };
 	Menu mainMenu(WINDOW_WIDTH, WINDOW_HEIGHT, mainMenuLabels, sf::Color::White, sf::Color::Red);
 	Menu optionsMenu(WINDOW_WIDTH, WINDOW_HEIGHT, optionsMenuLabels, sf::Color::White, sf::Color::Red);
 	Menu gameOverMenu(WINDOW_WIDTH, WINDOW_HEIGHT, gameOverMenuLabels, sf::Color::White, sf::Color::Red);
@@ -100,7 +74,7 @@ int main()
 	GameWindow gameWindow = newGameWindow;
 	OptionsWindow optionsWindow = newOptionsWindow;
 	
-	mainMenu.playMenuTheme();
+	//mainMenu.playMenuTheme();
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -161,27 +135,25 @@ int main()
 		}
 		
 		aimSprite.setPosition(webcamThread.getX() - (aimSprite.getGlobalBounds().width / 2), webcamThread.getY() - (aimSprite.getGlobalBounds().height / 2));
-		showMessageOrAim(webcamThread, window, gunpointNotFound, aimSprite);
 
 		if (gameOver) {
 			window.clear();
-			gameOverMenu.draw(window, webcamThread);
-			showMessageOrAim(webcamThread, window, gunpointNotFound, aimSprite);
+			gameOverMenu.draw(window);
 		}
 		else if (playPressed)
 		{
 			window.clear();
+			showMessageOrAim(webcamThread, window, gunpointNotFound, aimSprite);
 			gameOver = gameWindow.drawWindow(window, webcamThread, aimSprite, animationTimer);
 		}
 		else if (optionsPressed)
 		{
-			optionsWindow.drawWindow(window, webcamThread, mainMenu, aimSprite, gunpointNotFound);
+			optionsWindow.drawWindow(window, webcamThread, mainMenu);
 		}
 		else
 		{		
 			window.clear();
-			mainMenu.draw(window, webcamThread);
-			showMessageOrAim(webcamThread, window, gunpointNotFound, aimSprite);
+			mainMenu.draw(window);
 		}
 		window.display();
 	}

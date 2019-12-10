@@ -22,6 +22,12 @@ void GameWindow::initializeText(sf::Text& text, sf::Font& font, int textSize, in
 
 void GameWindow::setupGameLogic() {
 	counter = 0;
+	explosions = list<Explosion>();
+
+	/*
+	Explosion temp(10, 10);
+	explosions.push_back(temp);
+	*/
 
 	if (!shootSoundBuffer1.loadFromFile("flaunch.wav")) {
 		cout << "Couldn't load the sound file" << endl;
@@ -45,9 +51,9 @@ void GameWindow::setupGameLogic() {
 		positioner -= 128;
 	}
 
-	initializeText(healthDisplay, font, 18, 10, windowWidth - 200, "HEALTH: " + to_string(playerHealth), sf::Color::White);
-	initializeText(pointTotal, font, 18, 10, 5, "SCORE: " + to_string(points), sf::Color::White);
-	initializeText(gunpointNotFound, font, 26, (windowHeight / 2), (windowWidth / 3), "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
+	initializeText(healthDisplay, font, 25, 10, windowWidth - 150, "HEALTH: " + to_string(playerHealth), sf::Color::White);
+	initializeText(pointTotal, font, 25, 10, 15, "SCORE: " + to_string(points), sf::Color::White);
+	initializeText(gunpointNotFound, font, 40, (windowHeight / 2) - 50, (windowWidth / 3), "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
 	//Monsters
 	for (int i = 0; i < MONSTER_COUNT; i++) {
 		monsters[i] = Monster(
@@ -127,23 +133,28 @@ int GameWindow::setupGameGraphics() {
 		return -5;
 	}
 	*/
-	if (!monsterTexture.loadFromFile("spritesheet.png")) {
+	if (!monsterTexture.loadFromFile("monstersSpritesheet.png")) {
 		cout << "Couldn't load the monster texture" << endl;
 		return -2;
 	}
-	if (!supermonsterTexture.loadFromFile("spritesheet.png")) {
+	if (!supermonsterTexture.loadFromFile("monstersSpritesheet2.png")) {
 		cout << "Couldn't load the super monster texture" << endl;
 		return -3;
 	}
-	if (!medpackTexture.loadFromFile("spritesheet.png")) {
+	if (!medpackTexture.loadFromFile("healthpackSpritesheet.png")) {
 		cout << "Couldn't load the medpack texture" << endl;
 		return -4;
 	}
-	if (!moneybagTexture.loadFromFile("spritesheet.png")) {
+	if (!moneybagTexture.loadFromFile("coinSpritesheet.png")) {
 		cout << "Couldn't load the moneybag texture" << endl;
 		return -5;
 	}
+	if (!explosionTexture.loadFromFile("explosionSpritesheet.png")) {
+		cout << "Couldn't load the moneybag texture" << endl;
+		return -6;
+	}
 	
+
 	backgroundSprite.setTexture(backgroundTexture);
 	monsterSprite.setTexture(monsterTexture);
 	supermonsterSprite.setTexture(supermonsterTexture);
@@ -190,6 +201,18 @@ void GameWindow::displayGameObjects(sf::RenderWindow& window, SpawnTrack(&spawnT
 		spawnTracks[i].update(playerHealth);
 		spawnTracks[i].draw(window);
 	}
+
+	if (explosions.size() > 0) {
+		for (std::list<Explosion>::iterator i = explosions.begin(); i != explosions.end(); ++i) {
+			if (i->updateFrame()) {
+				sf::Sprite temp(explosionTexture);
+				temp.setPosition(i->getPositionX(), i->getPositionY());
+				temp.setTextureRect(i->getRect());
+				window.draw(temp);//i->draw(window);
+			}
+			else explosions.erase(i);
+		}
+	}
 }
 
 void GameWindow::updateAnimation() {
@@ -225,9 +248,15 @@ bool GameWindow::checkForCollisions(WebcamControl& webcamThread) {
 		for (int j = 0; j < SPAWN_SOCKETS_PER_TRACK; j++) {
 			if (spawnTracks[i].sockets[j].checkCollision(webcamThread.getX(), webcamThread.getY(), 30)) {
 				int shotEffect1, shotEffect2;
+				int posX, posY;
 
-				string name = spawnTracks[i].sockets[j].registerShot(shotEffect1, shotEffect2);
+				string name = spawnTracks[i].sockets[j].registerShot(shotEffect1, shotEffect2, posX, posY);
 				
+				if (posX != -1000 && posY != -1000) {
+					Explosion temp(posX, posY);
+					explosions.push_back(temp);
+				}
+
 				if (shotEffect1 <= 0) playerHealth -= shotEffect1;
 				points += shotEffect2;
 
@@ -314,9 +343,7 @@ void GameWindow::handleEvent(sf::Event event, bool& spacePressed, bool& playPres
 
 			if (checkForCollisions(webcamThread) && !spacePressed) {
 				spacePressed = true;
-				//popSound.play();
-				cout << "Bullseye!" << endl;
-				//points += 10;
+				cout << "Bullseye!" << endl;	
 			}
 			else if (!spacePressed && playPressed)
 			{

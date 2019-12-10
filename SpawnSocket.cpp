@@ -55,14 +55,18 @@ bool SpawnSocket::checkMount() {
 	return this->isMounted;
 }
 
-string SpawnSocket::registerShot(int& shotDetails1, int& shotDetails2) {
+string SpawnSocket::registerShot(int& shotDetails1, int& shotDetails2, int &posX, int &posY) {
 	shotDetails1 = this->getMonster().getDamage();
 	shotDetails2 = this->getMonster().getPoints();
 	if (this->getMonster().handleShot()) {
 		string temp = this->getMonster().getDeathSound();
+		posX = this->positionX;
+		posY = this->baseline;
 		this->unmount();
 		return temp;
 	}
+	posX = -1000;
+	posY = -1000;
 	return this->getMonster().getDeathSound();
 }
 

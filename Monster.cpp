@@ -35,18 +35,16 @@ void Monster::updatePosition(int x, int y) {
 }
 
 void Monster::draw(sf::RenderWindow& window) {
-	if (this->rectSourceSprite.left == 384) {
-		this->rectSourceSprite.left = 0;
-		this->rectSourceSprite.top += 128;
-		if (this->rectSourceSprite.top == 384) {
-			this->rectSourceSprite.top = 0;
+	if (animationCounter++ == 20) {
+		if (this->rectSourceSprite.left == 128) {
+			this->rectSourceSprite.left = 0;
 		}
+		else this->rectSourceSprite.left += 128;
+		animationCounter = 0;
 	}
-	else this->rectSourceSprite.left += 128;
+
 	this->sprite.setTextureRect(this->rectSourceSprite);
 	this->sprite.setPosition(this->centerX, this->centerY);
-
-	//cout << this->sprite.getPosition().x << " " << this->sprite.getPosition().y << endl; 
 	window.draw(this->sprite);
 }
 
