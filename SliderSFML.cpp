@@ -87,7 +87,6 @@ void SliderSFML::logic(sf::RenderWindow& window)
 {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 	{
-		cout << yCord << " " << sf::Mouse::getPosition(window).y << endl;
 		if (sf::Mouse::getPosition(window).x >= xCord && sf::Mouse::getPosition(window).x <= xCord + axisWidth &&
 			sf::Mouse::getPosition(window).y >= yCord - 100 && sf::Mouse::getPosition(window).y <= yCord + 100)
 		{
