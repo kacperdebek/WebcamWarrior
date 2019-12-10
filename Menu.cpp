@@ -3,7 +3,7 @@
 
 Menu::Menu(float width, float height, vector<string> labelList, sf::Color mainColor, sf::Color selectedColor)
 {
-	if (!font.loadFromFile("Gamefont.ttf"))
+	if (!font.loadFromFile("Aileenation.ttf"))
 	{
 		cout << "Couldn't load the font" << endl;
 		return;
@@ -39,7 +39,7 @@ Menu::Menu(float width, float height, vector<string> labelList, sf::Color mainCo
 		const sf::FloatRect bounds(menu[i].getLocalBounds());
 		const sf::Vector2f box(menuButtonTexture.getSize());
 		menu[i].setOrigin((bounds.width - box.x) / 2 + bounds.left, (bounds.height - box.y) / 2 + bounds.top);
-		menu[i].setPosition(sf::Vector2f((this->width / 2) - 115, (this->height / (numOfLabels + 1) * (i+1)) - 25));
+		menu[i].setPosition(sf::Vector2f((this->width / 2) - 115, (this->height / (numOfLabels + 1) * (i+1)) + 50));
 	}
 	selectedItemIndex = -1;
 }
@@ -54,7 +54,7 @@ void Menu::draw(sf::RenderWindow &window)
 	window.draw(menuBackgroundSprite);
 	for (int i = 0; i < numOfLabels; i++)
 	{
-		menuButtonSprite.setPosition(sf::Vector2f((this->width / 2) - 50, this->height / (numOfLabels + 1) * (i + 1)));
+		menuButtonSprite.setPosition(sf::Vector2f((this->width / 2) - 50, this->height / (numOfLabels + 1) * (i + 1) + 75));
 		window.draw(menuButtonSprite);
 		if((menu[i].getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y)))
 		{

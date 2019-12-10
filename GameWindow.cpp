@@ -45,9 +45,9 @@ void GameWindow::setupGameLogic() {
 		positioner -= 128;
 	}
 
-	initializeText(healthDisplay, font, 18, 10, windowWidth - 200, "HEALTH: " + to_string(playerHealth), sf::Color::White);
-	initializeText(pointTotal, font, 18, 10, 5, "SCORE: " + to_string(points), sf::Color::White);
-	initializeText(gunpointNotFound, font, 26, (windowHeight / 2), (windowWidth / 3), "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
+	initializeText(healthDisplay, font, 25, 10, windowWidth - 150, "HEALTH: " + to_string(playerHealth), sf::Color::White);
+	initializeText(pointTotal, font, 25, 10, 15, "SCORE: " + to_string(points), sf::Color::White);
+	initializeText(gunpointNotFound, font, 40, (windowHeight / 2) - 50, (windowWidth / 3), "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
 	//Monsters
 	for (int i = 0; i < MONSTER_COUNT; i++) {
 		monsters[i] = Monster(

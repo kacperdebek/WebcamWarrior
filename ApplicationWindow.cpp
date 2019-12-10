@@ -70,7 +70,7 @@ int main()
 	sf::Sprite aimSprite;
 
 
-	if (!font.loadFromFile("Arial.ttf")) {
+	if (!font.loadFromFile("DisposableDroidBB.ttf")) {
 		cout << "Couldn't load the font" << endl;
 		return -1;
 	}
@@ -88,9 +88,9 @@ int main()
 	bool playPressed = false;
 	bool optionsPressed = false;
 	bool gameOver = false;
-	vector<string> mainMenuLabels = { "Play", "Options", "Exit" };
+	vector<string> mainMenuLabels = { "PLAY", "OPTIONS", "EXIT" };
 	vector<string> optionsMenuLabels = { "Template" };
-	vector<string> gameOverMenuLabels = { "Play again", "Quit game" };
+	vector<string> gameOverMenuLabels = { "PLAY AGAIN", "QUIT GAME" };
 	Menu mainMenu(WINDOW_WIDTH, WINDOW_HEIGHT, mainMenuLabels, sf::Color::White, sf::Color::Red);
 	Menu optionsMenu(WINDOW_WIDTH, WINDOW_HEIGHT, optionsMenuLabels, sf::Color::White, sf::Color::Red);
 	Menu gameOverMenu(WINDOW_WIDTH, WINDOW_HEIGHT, gameOverMenuLabels, sf::Color::White, sf::Color::Red);
