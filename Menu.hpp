@@ -11,7 +11,7 @@ public:
 	Menu(float width, float height, vector<string> labelList, sf::Color mainColor, sf::Color selectedColor);
 	~Menu();
 
-	void draw(sf::RenderWindow& window);
+	void draw(sf::RenderWindow &window);
 	int GetPressedItem() { return selectedItemIndex; }
 	sf::Sprite getBackground();
 	void playMenuTheme();

@@ -133,9 +133,7 @@ int main()
 				}
 			}
 		}
-		
-		aimSprite.setPosition(webcamThread.getX() - (aimSprite.getGlobalBounds().width / 2), webcamThread.getY() - (aimSprite.getGlobalBounds().height / 2));
-
+		aimSprite.setPosition(webcamThread.getX() - (aimSprite.getGlobalBounds().width / 2), webcamThread.getY() - (aimSprite.getGlobalBounds().height / 2));	
 		if (gameOver) {
 			window.clear();
 			gameOverMenu.draw(window);

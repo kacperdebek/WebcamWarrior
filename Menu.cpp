@@ -39,7 +39,7 @@ Menu::Menu(float width, float height, vector<string> labelList, sf::Color mainCo
 		const sf::FloatRect bounds(menu[i].getLocalBounds());
 		const sf::Vector2f box(menuButtonTexture.getSize());
 		menu[i].setOrigin((bounds.width - box.x) / 2 + bounds.left, (bounds.height - box.y) / 2 + bounds.top);
-		menu[i].setPosition(sf::Vector2f((this->width / 2) - 115, (this->height / (numOfLabels + 1) * (i + 1)) + 50));
+		menu[i].setPosition(sf::Vector2f((this->width / 2) - 115, (this->height / (numOfLabels + 1) * (i+1)) + 50));
 	}
 	selectedItemIndex = -1;
 }
@@ -48,7 +48,7 @@ Menu::~Menu()
 	delete[] menu;
 }
 
-void Menu::draw(sf::RenderWindow& window)
+void Menu::draw(sf::RenderWindow &window)
 {
 	bool itemIsSelected = false;
 	window.draw(menuBackgroundSprite);
@@ -56,7 +56,7 @@ void Menu::draw(sf::RenderWindow& window)
 	{
 		menuButtonSprite.setPosition(sf::Vector2f((this->width / 2) - 50, this->height / (numOfLabels + 1) * (i + 1) + 75));
 		window.draw(menuButtonSprite);
-		if ((menu[i].getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y)))
+		if((menu[i].getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y)))
 		{
 			menu[i].setColor(selectedColor);
 			selectedItemIndex = i;
