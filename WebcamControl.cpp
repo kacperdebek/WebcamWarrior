@@ -25,14 +25,8 @@ void WebcamControl::run()
 		resize(image, image, Size(1280, 720));
 		flip(image, image, 1);
 		cvtColor(image, image_gray, COLOR_BGR2GRAY);
-		//threshold(image_gray, result, webcamThreshold, 255, THRESH_BINARY);
+
 		threshold(image_gray, res, webcamThreshold, 255, THRESH_BINARY);
-		/*Moments m = moments(result, true);
-		x = m.m10 / m.m00;
-		y = m.m01 / m.m00;
-		Point p(x, y);
-		circle(result, p, 5, Scalar(128, 0, 0), -1);
-		*/
 		int savedContour = -1;
 		double maxArea = 0.0;
 		findContours(res, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point());
@@ -57,8 +51,7 @@ void WebcamControl::run()
 		Point p2(x, y);
 		circle(img, p2, 5, Scalar(128, 0, 0), -1);
 
-		//imshow("Cam", result);
-		//imshow("Camv2", img);
+		imshow("Cam", img);
 		if (waitKey(1) == 27)
 			break;
 	}

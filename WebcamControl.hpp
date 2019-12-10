@@ -5,13 +5,14 @@
 using namespace cv;
 class WebcamControl
 {
-public:
-    int x;
-    int y;
+private:
+	int x;
+	int y;
 	int webcamThreshold;
-    void run();
-    int getX();
-    int getY();
+public:
+	void run();
+	int getX();
+	int getY();
 	void setThreshold(int targetThreshold);
 	int getThreshold();
 };

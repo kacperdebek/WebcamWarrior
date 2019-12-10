@@ -1,14 +1,11 @@
 #include "Menu.hpp"
 
 
-Menu::Menu(float width, float height, vector<string> labelList, sf::Color mainColor, sf::Color selectedColor)
-{
-	if (!font.loadFromFile("Aileenation.ttf"))
-	{
+Menu::Menu(float width, float height, vector<string> labelList, sf::Color mainColor, sf::Color selectedColor) {
+	if (!font.loadFromFile("Aileenation.ttf")) {
 		cout << "Couldn't load the font" << endl;
 		return;
 	}
-	
 	if (!this->menuBackgroundTexture.loadFromFile("menubackground.jpg")) {
 		cout << "Couldn't load menu background image" << endl;
 		return;
@@ -31,8 +28,7 @@ Menu::Menu(float width, float height, vector<string> labelList, sf::Color mainCo
 	this->menuButtonSprite.setOrigin(sf::Vector2f(70.f, 30.f));
 	this->numOfLabels = (int)labelList.size();
 	menu = new sf::Text[numOfLabels];
-	for (int i = 0; i < numOfLabels; i++)
-	{
+	for (int i = 0; i < numOfLabels; i++) {
 		menu[i].setFont(font);
 		menu[i].setColor(mainColor);
 		menu[i].setString(labelList.at(i));
@@ -48,22 +44,18 @@ Menu::~Menu()
 	delete[] menu;
 }
 
-void Menu::draw(sf::RenderWindow &window)
-{
+void Menu::draw(sf::RenderWindow &window) {
 	bool itemIsSelected = false;
 	window.draw(menuBackgroundSprite);
-	for (int i = 0; i < numOfLabels; i++)
-	{
+	for (int i = 0; i < numOfLabels; i++) {
 		menuButtonSprite.setPosition(sf::Vector2f((this->width / 2) - 50, this->height / (numOfLabels + 1) * (i + 1) + 75));
 		window.draw(menuButtonSprite);
-		if((menu[i].getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y)))
-		{
+		if((menu[i].getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))) {
 			menu[i].setColor(selectedColor);
 			selectedItemIndex = i;
 			itemIsSelected = true;
 		}
-		else
-		{
+		else {
 			menu[i].setColor(mainColor);
 		}
 		window.draw(menu[i]);
@@ -73,8 +65,7 @@ void Menu::draw(sf::RenderWindow &window)
 	itemIsSelected = false;
 	 
 }
-sf::Sprite Menu::getBackground()
-{
+sf::Sprite Menu::getBackground() {
 	return this->menuBackgroundSprite;
 }
 
