@@ -50,9 +50,7 @@ void WebcamControl::run()
 		Point p2(x, y);
 		circle(img, p2, 5, Scalar(128, 0, 0), -1);
 
-		imshow("camera", img);
-		cout << maxArea << endl;
-
+		imshow("Cam", img);
 		if (waitKey(1) == 27)
 			break;
 	}

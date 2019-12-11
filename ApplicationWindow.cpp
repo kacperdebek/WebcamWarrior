@@ -8,16 +8,14 @@
 #define WINDOW_HEIGHT 720
 #define WINDOW_WIDTH 1280
 
-void initializeTexts(sf::Text& text, sf::Font& font, int textSize, int xPosition, int yPosition, const String& label, const sf::Color& color)
-{
+void initializeTexts(sf::Text& text, sf::Font& font, int textSize, int xPosition, int yPosition, const String& label, const sf::Color& color) {
 	text.setFont(font);
 	text.setString(label);
 	text.setCharacterSize(textSize);
 	text.setFillColor(color);
 	text.setPosition(yPosition, xPosition);
 }
-void showMessageOrAim(WebcamControl& webcamThread, sf::RenderWindow& window, sf::Text notFoundMessage, sf::Sprite aimSprite)
-{
+void showMessageOrAim(WebcamControl& webcamThread, sf::RenderWindow& window, sf::Text notFoundMessage, sf::Sprite aimSprite) {
 	if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
 		window.draw(notFoundMessage);
 	}
@@ -63,10 +61,8 @@ int main()
 	bool optionsPressed = false;
 	bool gameOver = false;
 	vector<string> mainMenuLabels = { "PLAY", "OPTIONS", "EXIT" };
-	vector<string> optionsMenuLabels = { "Template" };
 	vector<string> gameOverMenuLabels = { "PLAY AGAIN", "QUIT GAME" };
 	Menu mainMenu(WINDOW_WIDTH, WINDOW_HEIGHT, mainMenuLabels, sf::Color::White, sf::Color::Red);
-	Menu optionsMenu(WINDOW_WIDTH, WINDOW_HEIGHT, optionsMenuLabels, sf::Color::White, sf::Color::Red);
 	Menu gameOverMenu(WINDOW_WIDTH, WINDOW_HEIGHT, gameOverMenuLabels, sf::Color::White, sf::Color::Red);
 
 	GameWindow newGameWindow(WINDOW_WIDTH, WINDOW_HEIGHT, font);
@@ -75,19 +71,14 @@ int main()
 	OptionsWindow optionsWindow = newOptionsWindow;
 	
 	mainMenu.playMenuTheme();
-	while (window.isOpen())
-	{
+	while (window.isOpen()) {
 		sf::Event event;
-		while (window.pollEvent(event))
-		{
+		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
 				window.close();
-
 			if (gameOver) {
-				if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Mouse::Left)
-				{
-					switch (gameOverMenu.GetPressedItem())
-					{
+				if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Mouse::Left) {
+					switch (gameOverMenu.GetPressedItem()) {
 					case 0:
 						gameWindow = newGameWindow;
 						optionsWindow = newOptionsWindow;
@@ -104,7 +95,6 @@ int main()
 					}
 				}
 			}
-
 			if (playPressed) { 
 				gameWindow.handleEvent(event, spacePressed, playPressed, webcamThread);
 			}
@@ -112,10 +102,8 @@ int main()
 				optionsWindow.handleEvent(event, optionsPressed);
 			}
 			else { 
-				if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Mouse::Left)
-				{
-					switch (mainMenu.GetPressedItem())
-					{
+				if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Mouse::Left) {
+					switch (mainMenu.GetPressedItem()) {
 					case 0:
 						playPressed = true;
 						break;
@@ -138,23 +126,19 @@ int main()
 			window.clear();
 			gameOverMenu.draw(window);
 		}
-		else if (playPressed)
-		{
+		else if (playPressed) {
 			window.clear();
 			showMessageOrAim(webcamThread, window, gunpointNotFound, aimSprite);
 			gameOver = gameWindow.drawWindow(window, webcamThread, aimSprite, animationTimer);
 		}
-		else if (optionsPressed)
-		{
+		else if (optionsPressed) {
 			optionsWindow.drawWindow(window, webcamThread, mainMenu);
 		}
-		else
-		{		
+		else {		
 			window.clear();
 			mainMenu.draw(window);
 		}
 		window.display();
 	}
-
 	return 0;
 }

@@ -87,20 +87,11 @@ void SliderSFML::logic(sf::RenderWindow& window)
 {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 	{
-		if (sf::Mouse::getPosition(window).x >= xCord && sf::Mouse::getPosition(window).x <= xCord + axisWidth)
+		if (sf::Mouse::getPosition(window).x >= xCord && sf::Mouse::getPosition(window).x <= xCord + axisWidth &&
+			sf::Mouse::getPosition(window).y >= yCord - 100 && sf::Mouse::getPosition(window).y <= yCord + 100)
 		{
 			slider.setPosition(sf::Mouse::getPosition(window).x, yCord);
 			sliderValue = (minValue + ((slider.getPosition().x - xCord) / axisWidth * (maxValue - minValue)));
-		}
-		else if (sf::Mouse::getPosition().x >= (xCord + axisWidth + window.getPosition().x) && sf::Mouse::getPosition().x <= (window.getPosition().x + window.getSize().x))
-		{
-			slider.setPosition(xCord + axisWidth, yCord);
-			sliderValue = maxValue;
-		}
-		else if (sf::Mouse::getPosition().x <= (xCord + window.getPosition().x) && sf::Mouse::getPosition().x >= (window.getPosition().x))
-		{
-			slider.setPosition(xCord, yCord);
-			sliderValue = minValue;
 		}
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && sliderValue > 0)
