@@ -29,5 +29,4 @@ class SpawnSocket
 		Monster& getMonster();
 		int getPositionX();
 		int getBaseline(); 
-		void updateAnimation();
 };

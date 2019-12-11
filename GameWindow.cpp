@@ -24,11 +24,6 @@ void GameWindow::setupGameLogic() {
 	counter = 0;
 	explosions = list<Explosion>();
 
-	/*
-	Explosion temp(10, 10);
-	explosions.push_back(temp);
-	*/
-
 	if (!shootSoundBuffer1.loadFromFile("flaunch.wav")) {
 		cout << "Couldn't load the sound file" << endl;
 	}
@@ -54,57 +49,29 @@ void GameWindow::setupGameLogic() {
 	initializeText(healthDisplay, font, 25, 10, windowWidth - 150, "HEALTH: " + to_string(playerHealth), sf::Color::White);
 	initializeText(pointTotal, font, 25, 10, 15, "SCORE: " + to_string(points), sf::Color::White);
 	initializeText(gunpointNotFound, font, 40, (windowHeight / 2) - 50, (windowWidth / 3), "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
-	//Monsters
+	
 	for (int i = 0; i < MONSTER_COUNT; i++) {
-		monsters[i] = Monster(
-			1, // health points
-			10, // points per kill
-			10, // damage dealt to player
-			60, // hitbox radius
-			monsterSprite,
-			"monster_death.wav"
-		);
+		monsters[i] = Monster(1, 10, 10, 60, monsterSprite, "monster_death.wav");
 		monsters[i].setCooldown(0 + rand() % 20);
 	}
-	//Supermonsters
+
 	for (int i = 0; i < SUPERMONSTER_COUNT; i++) {
 		for (int i = 0; i < SUPERMONSTER_COUNT; i++) {
-			supermonsters[i] = Monster(
-				2, // health points
-				20, // points per kill
-				15, // damage dealt to player
-				60, // hitbox radius
-				supermonsterSprite,
-				"supermonster_death.wav"
-			);
+			supermonsters[i] = Monster(2, 20, 15, 60, supermonsterSprite, "supermonster_death.wav");
 			supermonsters[i].setCooldown(300 + rand() % 700);
 		}
 	}
-	//Medpacks
+
 	for (int i = 0; i < MEDPACK_COUNT; i++) {
 		for (int i = 0; i < MEDPACK_COUNT; i++) {
-			medpacks[i] = Monster(
-				1, // health points
-				0, // points per kill
-				-20, // damage dealt to player
-				60, // hitbox radius
-				medpackSprite,
-				"Pop.wav"
-			);
+			medpacks[i] = Monster(1, 0,	-20, 60, medpackSprite,	"Pop.wav");
 			medpacks[i].setCooldown(1500 + rand() % 3500);
 		}
 	}
-	//Moneybags
+
 	for (int i = 0; i < MONEYBAG_COUNT; i++) {
 		for (int i = 0; i < MONEYBAG_COUNT; i++) {
-			moneybags[i] = Monster(
-				1, // health points
-				100, // points per kill
-				0, // damage dealt to player
-				60, // hitbox radius
-				moneybagSprite,
-				"Pop.wav"
-			);
+			moneybags[i] = Monster(1, 100, 0, 60, moneybagSprite, "Pop.wav");
 			moneybags[i].setCooldown(2500 + rand() % 4500);
 		}
 	}
@@ -115,24 +82,6 @@ int GameWindow::setupGameGraphics() {
 		cout << "Couldn't load the background image" << endl;
 		return -1;
 	}
-	/*
-	if (!monsterTexture.loadFromFile("testmonster.png")) {
-		cout << "Couldn't load the monster texture" << endl;
-		return -2;
-	}
-	if (!supermonsterTexture.loadFromFile("supermonster.png")) {
-		cout << "Couldn't load the super monster texture" << endl;
-		return -3;
-	}
-	if (!medpackTexture.loadFromFile("medpack.png")) {
-		cout << "Couldn't load the medpack texture" << endl;
-		return -4;
-	}
-	if (!moneybagTexture.loadFromFile("moneybag.png")) {
-		cout << "Couldn't load the moneybag texture" << endl;
-		return -5;
-	}
-	*/
 	if (!monsterTexture.loadFromFile("monstersSpritesheet.png")) {
 		cout << "Couldn't load the monster texture" << endl;
 		return -2;
@@ -181,6 +130,8 @@ void GameWindow::displayBackgroundAndUI(sf::RenderWindow& window,
 		if (backgroundRect.left == 1280) {
 			backgroundRect.left = 0;
 			backgroundRect.top += 720; 
+			if (backgroundRect.top == (720 * 2))
+				backgroundRect.top += 720;
 			if (backgroundRect.top == (720 * 4)) {
 				backgroundRect.top = 0;
 			}
@@ -208,39 +159,11 @@ void GameWindow::displayGameObjects(sf::RenderWindow& window, SpawnTrack(&spawnT
 				sf::Sprite temp(explosionTexture);
 				temp.setPosition(i->getPositionX(), i->getPositionY());
 				temp.setTextureRect(i->getRect());
-				window.draw(temp);//i->draw(window);
+				window.draw(temp);
 			}
 			else explosions.erase(i);
 		}
 	}
-}
-
-void GameWindow::updateAnimation() {
-	for (int i = 0; i < SPAWN_TRACK_COUNT; i++) {
-		spawnTracks[i].updateAnimation();
-	}
-	/*
-	if (animationCounter) animationRect.top += 128;
-	else animationRect.top -= 128;
-	
-	cout << "1" << endl;
-
-		if (animationRect.left == 384) {
-			animationRect.left = 0;
-			animationRect.top += 128;
-			if (animationRect.top == 384) {
-				animationRect.top = 0;
-			}
-		}
-		else animationRect.left += 128;
-		
-	monsterSprite.setTextureRect(animationRect);
-	supermonsterSprite.setTextureRect(animationRect);
-	medpackSprite.setTextureRect(animationRect);
-	moneybagSprite.setTextureRect(animationRect);
-
-	animationCounter = !animationCounter;
-	*/
 }
 
 bool GameWindow::checkForCollisions(WebcamControl& webcamThread) {
@@ -338,17 +261,14 @@ void GameWindow::updateEntities() {
 void GameWindow::handleEvent(sf::Event event, bool& spacePressed, bool& playPressed, WebcamControl& webcamThread) {
 	if (event.type == sf::Event::KeyReleased || event.type == sf::Event::MouseButtonPressed) {
 		if (event.key.code == sf::Keyboard::Space) {
-			//shootSound.play();
 			GunShot();
 
 			if (checkForCollisions(webcamThread) && !spacePressed) {
 				spacePressed = true;
-				cout << "Bullseye!" << endl;	
 			}
 			else if (!spacePressed && playPressed)
 			{
 				spacePressed = true;
-				cout << "Miss! " << endl;
 				points -= 1;
 			}
 		}
@@ -366,9 +286,6 @@ void GameWindow::handleEvent(sf::Event event, bool& spacePressed, bool& playPres
 
 bool GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThread, sf::Sprite aimSprite, sf::Clock &animationTimer)
 {
-	if (animationTimer.getElapsedTime().asMilliseconds() > 150) {
-		updateAnimation();
-	}
 	if(playerHealth <= 0) return true;
 	updateEntities();
 	displayBackgroundAndUI(window, backgroundSprite, pointTotal, healthDisplay, points, playerHealth);

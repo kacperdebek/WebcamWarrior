@@ -74,7 +74,7 @@ int main()
 	GameWindow gameWindow = newGameWindow;
 	OptionsWindow optionsWindow = newOptionsWindow;
 	
-	//mainMenu.playMenuTheme();
+	mainMenu.playMenuTheme();
 	while (window.isOpen())
 	{
 		sf::Event event;

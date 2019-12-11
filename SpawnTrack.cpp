@@ -11,7 +11,6 @@ SpawnTrack::SpawnTrack() {
 SpawnTrack::SpawnTrack(int startY, int speed, int shift) {
 	this->speed = speed;
 	this->baseline = startY;
-	cout << "Spawn track speed and baseline coord:" << this->speed << this->baseline << "\n";
 
 	int positioner = -1800 - shift;
 	for (int i = 0; i < SPAWN_SOCKETS_PER_TRACK; i++) {
@@ -32,8 +31,3 @@ void SpawnTrack::draw(sf::RenderWindow& window) {
 	}
 }
 
-void SpawnTrack::updateAnimation() {
-	for (int i = 0; i < SPAWN_SOCKETS_PER_TRACK; i++) {
-		this->sockets[i].updateAnimation();
-	}
-}

@@ -15,7 +15,7 @@ bool Explosion::updateFrame() {
 		if (this->spriteRect.left == (128 * 3)) {
 			this->spriteRect.left = 0;
 			this->spriteRect.top += 128;
-			if (this->spriteRect.top == (128 * 3)) {// && (spriteRect.left == (128*2))) {
+			if (this->spriteRect.top == (128 * 3)) {
 				return false;
 			}
 		}

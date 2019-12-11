@@ -65,7 +65,6 @@ public:
 	void displayGameObjects(sf::RenderWindow&, SpawnTrack(&)[SPAWN_TRACK_COUNT]);
 	bool checkForCollisions(WebcamControl&);
 	void updateEntities();
-	void updateAnimation();
 	void handleEvent(sf::Event, bool&, bool&, WebcamControl&);
 	bool drawWindow(sf::RenderWindow&, WebcamControl&, sf::Sprite, sf::Clock&);
 	void GunShot();

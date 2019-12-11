@@ -37,7 +37,6 @@ public:
 	void unmount();
 	bool checkMount();
 	bool handleShot();
-	void updateSprite();
 
 	int getHitboxRadius();
 	bool hasCooldown();

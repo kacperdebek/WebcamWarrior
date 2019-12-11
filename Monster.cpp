@@ -69,7 +69,6 @@ bool Monster::checkMount() {
 }
 
 bool Monster::handleShot() {
-	cout << "Monster hit, health: " << this->health << endl;
 	if (--this->health <= 0) {
 		this->health = this->totalHealth;
 		return true;
@@ -106,16 +105,3 @@ string Monster::getDeathSound() {
 	return this->deathSound;
 }
 
-
-void Monster::updateSprite() {
-	//if (this->rectSourceSprite.left == 384) {
-	//	this->rectSourceSprite.left = 0;
-	//	this->rectSourceSprite.top += 128;
-	//	if (this->rectSourceSprite.top == 384) {
-	//		this->rectSourceSprite.top = 0;
-	//	}
-	//}
-	//else this->rectSourceSprite.left += 128;
-
-	//this->sprite.setTextureRect(this->rectSourceSprite);
-}
