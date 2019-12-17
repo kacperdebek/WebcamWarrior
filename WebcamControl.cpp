@@ -37,9 +37,8 @@ void WebcamControl::run()
 				maxArea = area;
 				savedContour = i;
 			}
-
 		}
-		if(maxArea < 10000)
+		if(maxArea < 6000)
 			savedContour = -1;
 		Mat img(720, 1280, CV_8UC3, Scalar(0, 0, 0));
 		cvtColor(img, img, COLOR_BGR2GRAY);

@@ -29,7 +29,7 @@ private:
 public:
 
 	Monster();
-	Monster(int, int, int, int, sf::Sprite&, string);
+	Monster(int health, int points, int damage, int hitboxRadius, sf::Sprite& sprite, string sound);
 	void updatePosition(int, int);
 	void drawHitbox(sf::RenderWindow&);
 	void draw(sf::RenderWindow&);

@@ -38,6 +38,13 @@ void GameWindow::setupGameLogic() {
 	shootSound2.setVolume(80);
 
 	playerHealth = 100;
+
+	if (!lifeBarTexture.loadFromFile("bar_frame100.png")) {
+		cout << "Couldn't load the lifebar image" << endl;
+	}
+	lifeBarSprite.setTexture(lifeBarTexture);
+	lifeBarSprite.setPosition(windowWidth - 155, 6);
+
 	points = 0;
 
 	positioner = 592;
@@ -57,7 +64,7 @@ void GameWindow::setupGameLogic() {
 
 	for (int i = 0; i < SUPERMONSTER_COUNT; i++) {
 		for (int i = 0; i < SUPERMONSTER_COUNT; i++) {
-			supermonsters[i] = Monster(2, 20, 15, 60, supermonsterSprite, "supermonster_death.wav");
+			supermonsters[i] = Monster(2, 20, 20, 60, supermonsterSprite, "supermonster_death.wav");
 			supermonsters[i].setCooldown(300 + rand() % 700);
 		}
 	}
@@ -116,15 +123,10 @@ int GameWindow::setupGameGraphics() {
 	return 0;
 }
 
-void GameWindow::displayBackgroundAndUI(sf::RenderWindow& window,
-	sf::Sprite& backgroundSprite,
-	sf::Text& pointTotal,
-	sf::Text& healthDisplay,
-	int points,
-	int health) {
+void GameWindow::displayBackgroundAndUI(sf::RenderWindow& window) {
 	window.clear();
 	pointTotal.setString("POINTS: " + to_string(points));
-	healthDisplay.setString("HEALTH: " + to_string(health));
+	//healthDisplay.setString("HEALTH: " + to_string(playerHealth));
 
 	if(counter++ == 25) {
 		if (backgroundRect.left == 1280) {
@@ -141,13 +143,15 @@ void GameWindow::displayBackgroundAndUI(sf::RenderWindow& window,
 	}
 
 	backgroundSprite.setTextureRect(this->backgroundRect);
+	updateLifeBar();
 
 	window.draw(backgroundSprite);
 	window.draw(pointTotal);
-	window.draw(healthDisplay);
+	window.draw(lifeBarSprite);
+//	window.draw(healthDisplay);
 }
 
-void GameWindow::displayGameObjects(sf::RenderWindow& window, SpawnTrack(&spawnTracks)[SPAWN_TRACK_COUNT]) {
+void GameWindow::displayGameObjects(sf::RenderWindow& window) {
 	for (int i = 0; i < SPAWN_TRACK_COUNT; i++) {
 		spawnTracks[i].update(playerHealth);
 		spawnTracks[i].draw(window);
@@ -288,8 +292,8 @@ bool GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThrea
 {
 	if(playerHealth <= 0) return true;
 	updateEntities();
-	displayBackgroundAndUI(window, backgroundSprite, pointTotal, healthDisplay, points, playerHealth);
-	displayGameObjects(window, spawnTracks);
+	displayBackgroundAndUI(window);
+	displayGameObjects(window);
 
 	if (webcamThread.getX() < 0 || webcamThread.getY() < 0) {
 		window.draw(gunpointNotFound);
@@ -303,4 +307,87 @@ bool GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThrea
 void GameWindow::GunShot() {
 	if (rand() % 2) shootSound1.play();
 	else shootSound2.play();
+}
+
+void GameWindow::updateLifeBar() {
+	switch (playerHealth) {
+		case 100:
+			if (!lifeBarTexture.loadFromFile("bar_frame100.png")) {
+				cout << "Couldn't load the lifebar image" << endl;
+			}
+			lifeBarSprite.setTexture(lifeBarTexture);
+			break;
+	
+		case 90:
+			if (!lifeBarTexture.loadFromFile("bar_frame90.png")) {
+				cout << "Couldn't load the lifebar image" << endl;
+			}
+			lifeBarSprite.setTexture(lifeBarTexture);
+			break;
+
+		case 80:
+			if (!lifeBarTexture.loadFromFile("bar_frame80.png")) {
+				cout << "Couldn't load the lifebar image" << endl;
+			}
+			lifeBarSprite.setTexture(lifeBarTexture);
+			break;
+
+		case 70:
+			if (!lifeBarTexture.loadFromFile("bar_frame70.png")) {
+				cout << "Couldn't load the lifebar image" << endl;
+			}
+			lifeBarSprite.setTexture(lifeBarTexture);
+			break;
+
+		case 60:
+			if (!lifeBarTexture.loadFromFile("bar_frame60.png")) {
+				cout << "Couldn't load the lifebar image" << endl;
+			}
+			lifeBarSprite.setTexture(lifeBarTexture);
+			break;
+
+		case 50:
+			if (!lifeBarTexture.loadFromFile("bar_frame50.png")) {
+				cout << "Couldn't load the lifebar image" << endl;
+			}
+			lifeBarSprite.setTexture(lifeBarTexture);
+			break;
+
+		case 40:
+			if (!lifeBarTexture.loadFromFile("bar_frame40.png")) {
+				cout << "Couldn't load the lifebar image" << endl;
+			}
+			lifeBarSprite.setTexture(lifeBarTexture);
+			break;
+
+		case 30:
+			if (!lifeBarTexture.loadFromFile("bar_frame30.png")) {
+				cout << "Couldn't load the lifebar image" << endl;
+			}
+			lifeBarSprite.setTexture(lifeBarTexture);
+			break;
+
+		case 20:
+			if (!lifeBarTexture.loadFromFile("bar_frame20.png")) {
+				cout << "Couldn't load the lifebar image" << endl;
+			}
+			lifeBarSprite.setTexture(lifeBarTexture);
+			break;
+
+		case 10:
+			if (!lifeBarTexture.loadFromFile("bar_frame10.png")) {
+				cout << "Couldn't load the lifebar image" << endl;
+			}
+			lifeBarSprite.setTexture(lifeBarTexture);
+			break;
+
+		case 0:
+			if (!lifeBarTexture.loadFromFile("bar_frame0.png")) {
+				cout << "Couldn't load the lifebar image" << endl;
+			}
+			lifeBarSprite.setTexture(lifeBarTexture);
+			break;
+		default:
+			cout << "???" << endl;
+	}
 }

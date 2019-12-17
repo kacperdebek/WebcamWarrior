@@ -37,6 +37,7 @@ private:
 	sf::Texture medpackTexture;
 	sf::Texture moneybagTexture;
 	sf::Texture explosionTexture;
+	sf::Texture lifeBarTexture;
 	
 	sf::IntRect backgroundRect;
 
@@ -45,6 +46,7 @@ private:
 	sf::Sprite supermonsterSprite;
 	sf::Sprite medpackSprite;
 	sf::Sprite moneybagSprite;
+	sf::Sprite lifeBarSprite;
 
 	list<Explosion> explosions;
 
@@ -61,11 +63,12 @@ public:
 	void setupGameLogic();
 	int setupGameGraphics();
 	void initializeText(sf::Text&, sf::Font&, int, int, int, const String&, const sf::Color&);
-	void displayBackgroundAndUI(sf::RenderWindow&, sf::Sprite&, sf::Text&, sf::Text&, int, int);
-	void displayGameObjects(sf::RenderWindow&, SpawnTrack(&)[SPAWN_TRACK_COUNT]);
+	void displayBackgroundAndUI(sf::RenderWindow&);
+	void displayGameObjects(sf::RenderWindow&);
 	bool checkForCollisions(WebcamControl&);
 	void updateEntities();
 	void handleEvent(sf::Event, bool&, bool&, WebcamControl&);
 	bool drawWindow(sf::RenderWindow&, WebcamControl&, sf::Sprite, sf::Clock&);
 	void GunShot();
+	void updateLifeBar();
 };
