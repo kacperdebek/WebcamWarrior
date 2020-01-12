@@ -57,6 +57,9 @@ private:
 	int windowHeight;
 	bool gameOverFlag;
 	int counter;
+	sf::Texture gameOverTexture;
+	sf::Sprite gameOverSprite;
+	sf::IntRect gameOverRect;
 
 public:
 	GameWindow(int width, int height, sf::Font appFont);

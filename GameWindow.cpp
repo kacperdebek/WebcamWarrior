@@ -119,15 +119,20 @@ int GameWindow::setupGameGraphics() {
 
 	backgroundRect = sf::IntRect(0, 0, 1280, 720);
 	backgroundSprite.setTextureRect(backgroundRect);
+	gameOverRect = sf::IntRect(0, 0, 1280, 720);
 
+	if (!gameOverTexture.loadFromFile("gameoverspritesheet2.png")) {
+		cout << "Couldn't load the background image" << endl;
+		return -1;
+	}
+	gameOverSprite.setTexture(gameOverTexture);
+	gameOverSprite.setPosition(0, 0);
 	return 0;
 }
 
 void GameWindow::displayBackgroundAndUI(sf::RenderWindow& window) {
 	window.clear();
 	pointTotal.setString("POINTS: " + to_string(points));
-	//healthDisplay.setString("HEALTH: " + to_string(playerHealth));
-
 	if(counter++ == 25) {
 		if (backgroundRect.left == 1280) {
 			backgroundRect.left = 0;
@@ -148,7 +153,6 @@ void GameWindow::displayBackgroundAndUI(sf::RenderWindow& window) {
 	window.draw(backgroundSprite);
 	window.draw(pointTotal);
 	window.draw(lifeBarSprite);
-//	window.draw(healthDisplay);
 }
 
 void GameWindow::displayGameObjects(sf::RenderWindow& window) {
@@ -300,6 +304,21 @@ bool GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThrea
 	}
 	else {
 		window.draw(aimSprite);
+	}
+	if (playerHealth <= 0) {
+
+		int gameOverCounter = 0;
+
+		while (gameOverRect.top < 5040) {
+			gameOverSprite.setTextureRect(gameOverRect);
+			window.draw(gameOverSprite);
+			window.display();
+			if (gameOverCounter++ > 25) {
+				gameOverRect.top += 720;
+				gameOverCounter = 0;
+			}
+		}
+		return true;
 	}
 	return false;
 }
