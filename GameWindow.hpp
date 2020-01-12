@@ -59,16 +59,16 @@ private:
 	int counter;
 
 public:
-	GameWindow(int, int, sf::Font);
+	GameWindow(int width, int height, sf::Font appFont);
 	void setupGameLogic();
 	int setupGameGraphics();
-	void initializeText(sf::Text&, sf::Font&, int, int, int, const String&, const sf::Color&);
-	void displayBackgroundAndUI(sf::RenderWindow&);
-	void displayGameObjects(sf::RenderWindow&);
-	bool checkForCollisions(WebcamControl&);
+	void initializeText(sf::Text& text, sf::Font& font, int textSize, int xPosition, int yPosition, const String& label, const sf::Color& color);
+	void displayBackgroundAndUI(sf::RenderWindow& window);
+	void displayGameObjects(sf::RenderWindow& window);
+	bool checkForCollisions(WebcamControl& webcamThread);
 	void updateEntities();
-	void handleEvent(sf::Event, bool&, bool&, WebcamControl&);
-	bool drawWindow(sf::RenderWindow&, WebcamControl&, sf::Sprite, sf::Clock&);
+	void handleEvent(sf::Event event, bool& spacePressed, bool& playPressed, WebcamControl& webcamThread);
+	bool drawWindow(sf::RenderWindow& window, WebcamControl& webcamThread, sf::Sprite aimSprite, sf::Clock& animationTimer);
 	void GunShot();
 	void updateLifeBar();
 };

@@ -10,8 +10,8 @@ public:
 	SpawnSocket sockets[SPAWN_SOCKETS_PER_TRACK];
 
 	SpawnTrack();
-	SpawnTrack(int, int, int);
-	void update(int&);
-	void draw(sf::RenderWindow&);
+	SpawnTrack(int startY, int speed, int shift);
+	void update(int& playerHealth);
+	void draw(sf::RenderWindow& window);
 };
 

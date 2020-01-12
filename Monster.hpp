@@ -30,9 +30,9 @@ public:
 
 	Monster();
 	Monster(int health, int points, int damage, int hitboxRadius, sf::Sprite& sprite, string sound);
-	void updatePosition(int, int);
-	void drawHitbox(sf::RenderWindow&);
-	void draw(sf::RenderWindow&);
+	void updatePosition(int x, int y);
+	void drawHitbox(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window);
 
 	void unmount();
 	bool checkMount();
@@ -40,7 +40,7 @@ public:
 
 	int getHitboxRadius();
 	bool hasCooldown();
-	void setCooldown(int);
+	void setCooldown(int cd);
 	void setMounted();
 	int getDamage();
 	int getPoints();

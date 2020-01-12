@@ -15,16 +15,16 @@ class SpawnSocket
 		Monster* mountedMonster;
 	public:
 		SpawnSocket();
-		SpawnSocket(int, int, int);
-		void update(int&);
-		void draw(sf::RenderWindow&);
+		SpawnSocket(int baseline, int speed, int positionX);
+		void update(int& playerHealth);
+		void draw(sf::RenderWindow& window);
 
-		void mount(Monster&);
+		void mount(Monster& monster);
 		void unmount();
 		bool checkMount();
 		string SpawnSocket::registerShot(int& shotDetails1, int& shotDetails2, int& posX, int& posY);
 
-		bool checkCollision(int, int, int);
+		bool checkCollision(int aimX, int aimY, int aimRadius);
 		bool isOutOfWindow();
 		Monster& getMonster();
 		int getPositionX();
