@@ -6,7 +6,6 @@ class Explosion {
 private:
 	sf::IntRect spriteRect;
 	int posX, posY;
-
 	int counter;
 public:
 	Explosion(int posX, int posY);
