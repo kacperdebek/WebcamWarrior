@@ -8,7 +8,6 @@ private:
 	int speed;
 public:
 	SpawnSocket sockets[SPAWN_SOCKETS_PER_TRACK];
-
 	SpawnTrack();
 	SpawnTrack(int startY, int speed, int shift);
 	void update(int& playerHealth);
