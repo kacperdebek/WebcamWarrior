@@ -17,13 +17,14 @@ class SliderSFML
 	int sliderWidth;
 	int sliderHeight;
 	float sliderValue;
+	void logic(sf::RenderWindow& window);
 public:
 	SliderSFML();
 	SliderSFML(int x, int y, int length);
 	void setSlider(int x, int y, int length);
 	sf::Text returnText(int x, int y, std::string z, int fontSize);
 	void create(int min, int max);
-	void logic(sf::RenderWindow &window);
+	
 	float getSliderValue();
 	void setSliderValue(float newValue);
 	void setSliderPercentValue(float newPercentValue);

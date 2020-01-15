@@ -13,6 +13,9 @@ private:
 	int speed;
 	bool isMounted;
 	Monster* mountedMonster;
+
+	void unmount();
+
 public:
 	SpawnSocket();
 	SpawnSocket(int baseline, int speed, int positionX);
@@ -20,7 +23,6 @@ public:
 	void draw(sf::RenderWindow& window);
 
 	void mount(Monster& monster);
-	void unmount();
 	bool checkMount();
 	string SpawnSocket::registerShot(int& shotDetails1, int& shotDetails2, int& posX, int& posY);
 

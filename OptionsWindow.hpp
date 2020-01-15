@@ -10,9 +10,11 @@ private:
 
 	sf::Text sliderText;
 	SliderSFML slider;
+
+	void initializeText(sf::Text& text, sf::Font& font, int textSize, int xPosition, int yPosition, const String& label, const sf::Color& color);
+
 public:
 	OptionsWindow(int width, int height, sf::Font& font, WebcamControl& webcamThread);
 	void handleEvent(sf::Event event, bool& optionsPressed);
 	void drawWindow(sf::RenderWindow& window, WebcamControl& webcamThread, Menu& mainMenu);
-	void initializeText(sf::Text& text, sf::Font& font, int textSize, int xPosition, int yPosition, const String& label, const sf::Color& color);
 };
