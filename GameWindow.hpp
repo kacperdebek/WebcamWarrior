@@ -21,7 +21,6 @@ private:
 	sf::Sound shootSound1;
 	sf::Sound shootSound2;
 
-//	sf::Text healthDisplay;
 	sf::Text pointTotal;
 	sf::Text gunpointNotFound;
 
@@ -57,20 +56,15 @@ private:
 	sf::Sprite gameOverSprite;
 	sf::IntRect gameOverRect;
 
-public:
-	GameWindow(int width, int height, sf::Font appFont);
-	
 	void setupGameover();
 	void setupSound();
 	void setupLogic();
 	void setupExplosions();
 	void setupUI();
 	void setupBackground();
-	void setupEntities();
-
 
 	void setupMonsters();
-	void setupMonsters();
+	void setupSupermonsters();
 	void setupMedpacks();
 	void setupMoneybags();
 
@@ -79,8 +73,12 @@ public:
 	void displayGameObjects(sf::RenderWindow& window);
 	bool checkForCollisions(WebcamControl& webcamThread);
 	void updateEntities();
+	void playGunshotSound();
+	void updateLifeBar();
+
+public:
+	GameWindow(int width, int height, sf::Font appFont);
+	
 	void handleEvent(sf::Event event, bool& spacePressed, bool& playPressed, WebcamControl& webcamThread);
 	bool drawWindow(sf::RenderWindow& window, WebcamControl& webcamThread, sf::Sprite aimSprite, sf::Clock& animationTimer);
-	void gunShot();
-	void updateLifeBar();
 };

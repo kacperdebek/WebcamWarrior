@@ -13,7 +13,11 @@ GameWindow::GameWindow(int width, int height, sf::Font appFont) {
 	setupExplosions();
 	setupUI();
 	setupBackground();
-	setupEntities();
+
+	setupMonsters();
+	setupSupermonsters();
+	setupMedpacks();
+	setupMoneybags();
 }
 
 void GameWindow::initializeText(sf::Text& text, sf::Font& font, int textSize, int xPosition, int yPosition, const String& label, const sf::Color& color)
@@ -62,6 +66,11 @@ void GameWindow::setupLogic() {
 
 void GameWindow::setupExplosions() {
 	explosions = list<Explosion>();
+
+	if (!explosionTexture.loadFromFile("explosionSpritesheet.png")) {
+		cout << "Couldn't load the moneybag texture" << endl;
+		exit(1);
+	}
 }
 
 void GameWindow::setupUI() {
@@ -86,63 +95,60 @@ void GameWindow::setupBackground() {
 		cout << "Couldn't load the background image" << endl;
 		exit(1);
 	}
+
+	backgroundSprite.setTexture(backgroundTexture);
 }
 
 void GameWindow::setupMonsters() {
-}
-void GameWindow::setupMonsters() {
-}
-void GameWindow::setupMedpacks() {
-}
-void GameWindow::setupMoneybags() {
-}
-void GameWindow::setupEntities() {
 	if (!monsterTexture.loadFromFile("monstersSpritesheet.png")) {
 		cout << "Couldn't load the monster texture" << endl;
 		exit(1);
 	}
-	if (!supermonsterTexture.loadFromFile("monstersSpritesheet2.png")) {
-		cout << "Couldn't load the super monster texture" << endl;
-		exit(1);
-	}
-	if (!medpackTexture.loadFromFile("healthpackSpritesheet.png")) {
-		cout << "Couldn't load the medpack texture" << endl;
-		exit(1);
-	}
-	if (!moneybagTexture.loadFromFile("coinSpritesheet.png")) {
-		cout << "Couldn't load the moneybag texture" << endl;
-		exit(1);
-	}
-	if (!explosionTexture.loadFromFile("explosionSpritesheet.png")) {
-		cout << "Couldn't load the moneybag texture" << endl;
-		exit(1);
-	}
 
 	sf::Sprite monsterSprite;
-	sf::Sprite supermonsterSprite;
-	sf::Sprite medpackSprite;
-	sf::Sprite moneybagSprite;
-
-	backgroundSprite.setTexture(backgroundTexture);
 	monsterSprite.setTexture(monsterTexture);
-	supermonsterSprite.setTexture(supermonsterTexture);
-	medpackSprite.setTexture(medpackTexture);
-	moneybagSprite.setTexture(moneybagTexture);
 
 	for (int i = 0; i < MONSTER_COUNT; i++) {
 		monsters[i] = Monster(1, 10, 10, 60, monsterSprite, "monster_death.wav");
 		monsters[i].setCooldown(0 + rand() % 20);
 	}
+}
+void GameWindow::setupSupermonsters() {
+	if (!supermonsterTexture.loadFromFile("monstersSpritesheet2.png")) {
+		cout << "Couldn't load the super monster texture" << endl;
+		exit(1);
+	}
 
+	sf::Sprite supermonsterSprite;
+	supermonsterSprite.setTexture(supermonsterTexture);
+	
 	for (int i = 0; i < SUPERMONSTER_COUNT; i++) {
 		supermonsters[i] = Monster(2, 20, 20, 60, supermonsterSprite, "supermonster_death.wav");
 		supermonsters[i].setCooldown(300 + rand() % 700);
 	}
+}
+void GameWindow::setupMedpacks() {
+	if (!medpackTexture.loadFromFile("healthpackSpritesheet.png")) {
+		cout << "Couldn't load the medpack texture" << endl;
+		exit(1);
+	}
+
+	sf::Sprite medpackSprite;
+	medpackSprite.setTexture(medpackTexture);
 
 	for (int i = 0; i < MEDPACK_COUNT; i++) {
 		medpacks[i] = Monster(1, 0, -20, 60, medpackSprite, "Pop.wav");
 		medpacks[i].setCooldown(1500 + rand() % 3500);
 	}
+}
+void GameWindow::setupMoneybags() {
+	if (!moneybagTexture.loadFromFile("coinSpritesheet.png")) {
+		cout << "Couldn't load the moneybag texture" << endl;
+		exit(1);
+	}
+
+	sf::Sprite moneybagSprite;
+	moneybagSprite.setTexture(moneybagTexture);
 
 	for (int i = 0; i < MONEYBAG_COUNT; i++) {
 		moneybags[i] = Monster(1, 100, 0, 60, moneybagSprite, "Pop.wav");
@@ -289,7 +295,7 @@ void GameWindow::updateEntities() {
 void GameWindow::handleEvent(sf::Event event, bool& spacePressed, bool& playPressed, WebcamControl& webcamThread) {
 	if (event.type == sf::Event::KeyReleased || event.type == sf::Event::MouseButtonPressed) {
 		if (event.key.code == sf::Keyboard::Space) {
-			gunShot();
+			playGunshotSound();
 
 			if (checkForCollisions(webcamThread) && !spacePressed) {
 				spacePressed = true;
@@ -343,7 +349,7 @@ bool GameWindow::drawWindow(sf::RenderWindow& window, WebcamControl& webcamThrea
 	return false;
 }
 
-void GameWindow::gunShot() {
+void GameWindow::playGunshotSound() {
 	if (rand() % 2) shootSound1.play();
 	else shootSound2.play();
 }
