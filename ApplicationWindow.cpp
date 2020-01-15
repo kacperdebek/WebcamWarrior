@@ -78,7 +78,7 @@ int main()
 				window.close();
 			if (gameOver) {
 				if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Mouse::Left) {
-					switch (gameOverMenu.GetPressedItem()) {
+					switch (gameOverMenu.getPressedItem()) {
 					case 0:
 						gameWindow = newGameWindow;
 						optionsWindow = newOptionsWindow;
@@ -103,7 +103,7 @@ int main()
 			}
 			else { 
 				if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Mouse::Left) {
-					switch (mainMenu.GetPressedItem()) {
+					switch (mainMenu.getPressedItem()) {
 					case 0:
 						playPressed = true;
 						break;

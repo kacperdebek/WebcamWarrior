@@ -21,7 +21,7 @@ private:
 	sf::Sound shootSound1;
 	sf::Sound shootSound2;
 
-	sf::Text healthDisplay;
+//	sf::Text healthDisplay;
 	sf::Text pointTotal;
 	sf::Text gunpointNotFound;
 
@@ -42,10 +42,6 @@ private:
 	sf::IntRect backgroundRect;
 
 	sf::Sprite backgroundSprite;
-	sf::Sprite monsterSprite;
-	sf::Sprite supermonsterSprite;
-	sf::Sprite medpackSprite;
-	sf::Sprite moneybagSprite;
 	sf::Sprite lifeBarSprite;
 
 	list<Explosion> explosions;
@@ -63,8 +59,21 @@ private:
 
 public:
 	GameWindow(int width, int height, sf::Font appFont);
-	void setupGameLogic();
-	int setupGameGraphics();
+	
+	void setupGameover();
+	void setupSound();
+	void setupLogic();
+	void setupExplosions();
+	void setupUI();
+	void setupBackground();
+	void setupEntities();
+
+
+	void setupMonsters();
+	void setupMonsters();
+	void setupMedpacks();
+	void setupMoneybags();
+
 	void initializeText(sf::Text& text, sf::Font& font, int textSize, int xPosition, int yPosition, const String& label, const sf::Color& color);
 	void displayBackgroundAndUI(sf::RenderWindow& window);
 	void displayGameObjects(sf::RenderWindow& window);
@@ -72,6 +81,6 @@ public:
 	void updateEntities();
 	void handleEvent(sf::Event event, bool& spacePressed, bool& playPressed, WebcamControl& webcamThread);
 	bool drawWindow(sf::RenderWindow& window, WebcamControl& webcamThread, sf::Sprite aimSprite, sf::Clock& animationTimer);
-	void GunShot();
+	void gunShot();
 	void updateLifeBar();
 };
