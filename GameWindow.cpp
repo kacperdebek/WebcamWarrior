@@ -6,18 +6,18 @@ GameWindow::GameWindow(int width, int height, sf::Font appFont) {
 	windowWidth = width;
 	windowHeight = height;
 	font = appFont;
+	
+	setup();
+}
 
+void GameWindow::setup() {
 	setupGameover();
 	setupSound();
 	setupLogic();
 	setupExplosions();
 	setupUI();
 	setupBackground();
-
-	setupMonsters();
-	setupSupermonsters();
-	setupMedpacks();
-	setupMoneybags();
+	setupEntities();
 }
 
 void GameWindow::initializeText(sf::Text& text, sf::Font& font, int textSize, int xPosition, int yPosition, const String& label, const sf::Color& color)
@@ -57,6 +57,7 @@ void GameWindow::setupSound() {
 }
 
 void GameWindow::setupLogic() {
+	counter = 0;
 	positioner = 592;
 	for (int i = 0; i < SPAWN_TRACK_COUNT; i++) {
 		spawnTracks[i] = SpawnTrack(positioner, (rand() % 2 + 1), (rand() % 250));
@@ -99,6 +100,13 @@ void GameWindow::setupBackground() {
 	backgroundSprite.setTexture(backgroundTexture);
 }
 
+void GameWindow::setupEntities() {
+	setupMonsters();
+	setupSupermonsters();
+	setupMedpacks();
+	setupMoneybags();
+}
+
 void GameWindow::setupMonsters() {
 	if (!monsterTexture.loadFromFile("monstersSpritesheet.png")) {
 		cout << "Couldn't load the monster texture" << endl;
@@ -113,6 +121,7 @@ void GameWindow::setupMonsters() {
 		monsters[i].setCooldown(0 + rand() % 20);
 	}
 }
+
 void GameWindow::setupSupermonsters() {
 	if (!supermonsterTexture.loadFromFile("monstersSpritesheet2.png")) {
 		cout << "Couldn't load the super monster texture" << endl;
@@ -127,6 +136,7 @@ void GameWindow::setupSupermonsters() {
 		supermonsters[i].setCooldown(300 + rand() % 700);
 	}
 }
+
 void GameWindow::setupMedpacks() {
 	if (!medpackTexture.loadFromFile("healthpackSpritesheet.png")) {
 		cout << "Couldn't load the medpack texture" << endl;
@@ -141,6 +151,7 @@ void GameWindow::setupMedpacks() {
 		medpacks[i].setCooldown(1500 + rand() % 3500);
 	}
 }
+
 void GameWindow::setupMoneybags() {
 	if (!moneybagTexture.loadFromFile("coinSpritesheet.png")) {
 		cout << "Couldn't load the moneybag texture" << endl;
@@ -231,6 +242,13 @@ bool GameWindow::checkForCollisions(WebcamControl& webcamThread) {
 }
 
 void GameWindow::updateEntities() {
+	updateMonsters();
+	updateSupermonsters();
+	updateMoneybags();
+	updateMedpacks();
+}
+
+void GameWindow::updateMonsters() {
 	for (int i = 0; i < MONSTER_COUNT; i++) {
 		if (!monsters[i].checkMount() && !monsters[i].hasCooldown()) {
 			int memoryLimiter = 0;
@@ -245,7 +263,9 @@ void GameWindow::updateEntities() {
 			}
 		}
 	}
+}
 
+void GameWindow::updateSupermonsters() {
 	for (int i = 0; i < SUPERMONSTER_COUNT; i++) {
 		if (!supermonsters[i].checkMount() && !supermonsters[i].hasCooldown()) {
 			int memoryLimiter = 0;
@@ -260,7 +280,9 @@ void GameWindow::updateEntities() {
 			}
 		}
 	}
+}
 
+void GameWindow::updateMoneybags() {
 	for (int i = 0; i < MEDPACK_COUNT; i++) {
 		if (!medpacks[i].checkMount() && !medpacks[i].hasCooldown()) {
 			int memoryLimiter = 0;
@@ -275,7 +297,9 @@ void GameWindow::updateEntities() {
 			}
 		}
 	}
+}
 
+void GameWindow::updateMedpacks() {
 	for (int i = 0; i < MONEYBAG_COUNT; i++) {
 		if (!moneybags[i].checkMount() && !moneybags[i].hasCooldown()) {
 			int memoryLimiter = 0;
@@ -355,45 +379,11 @@ void GameWindow::playGunshotSound() {
 }
 
 void GameWindow::updateLifeBar() {
+	std::stringstream textureNameStream;
 	String textureName;
 
-	switch (playerHealth) {
-		case 100:
-			textureName = "bar_frame100.png";
-			break;
-		case 90:
-			textureName = "bar_frame90.png";
-			break;
-		case 80:
-			textureName = "bar_frame80.png";
-			break;
-		case 70:
-			textureName = "bar_frame70.png";
-			break;
-		case 60:
-			textureName = "bar_frame60.png";
-			break;
-		case 50:
-			textureName = "bar_frame50.png";
-			break;
-		case 40:
-			textureName = "bar_frame40.png";
-			break;
-		case 30:
-			textureName = "bar_frame30.png";
-			break;
-		case 20:
-			textureName = "bar_frame20.png";
-			break;
-		case 10:
-			textureName = "bar_frame10.png";
-			break;
-		case 0:
-			textureName = "bar_frame0.png";
-			break;
-		default:
-			cout << "???" << endl;
-	}
+	textureNameStream << "bar_frame" << playerHealth << ".png";
+	textureNameStream >> textureName;
 
 	if (!lifeBarTexture.loadFromFile(textureName)) {
 		cout << "Couldn't load the lifebar image" << endl;

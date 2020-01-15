@@ -63,7 +63,7 @@ void WebcamControl::run()
         Mat img(720, 1280, CV_8UC3, Scalar(0, 0, 0));
         drawBiggestBlob(img, contours, savedContour);
         getAndDrawCentroid(img);
-        imshow("Cam", img);
+        //imshow("Cam", img);
         if (waitKey(1) == 27)
             break;
     }
