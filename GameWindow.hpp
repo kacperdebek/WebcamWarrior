@@ -86,7 +86,7 @@ private:
 
 public:
 	GameWindow(int width, int height, sf::Font appFont);
-	
+	int getPoints();
 	void handleEvent(sf::Event event, bool& spacePressed, bool& playPressed, WebcamControl& webcamThread);
 	bool drawWindow(sf::RenderWindow& window, WebcamControl& webcamThread, sf::Sprite aimSprite, sf::Clock& animationTimer);
 };

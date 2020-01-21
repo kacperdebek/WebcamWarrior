@@ -390,3 +390,6 @@ void GameWindow::updateLifeBar() {
 	}
 	lifeBarSprite.setTexture(lifeBarTexture);
 }
+int GameWindow::getPoints() {
+	return this->points;
+}

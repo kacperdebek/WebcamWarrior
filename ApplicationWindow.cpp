@@ -36,6 +36,7 @@ int main()
 	thread.launch();
 
 	sf::Text gunpointNotFound;
+	sf::Text finalScore;
 	sf::Font font;
 	
 	sf::Texture aimTexture;
@@ -52,9 +53,9 @@ int main()
 	}
 
 	aimSprite.setTexture(aimTexture);
-
+	int score = 0;
 	initializeTexts(gunpointNotFound, font, 26, (WINDOW_HEIGHT / 2), (WINDOW_WIDTH / 3), "CANNOT LOCATE CONTROLLER", sf::Color::Yellow);
-
+	initializeTexts(finalScore, font, 36, (WINDOW_HEIGHT / 4), (WINDOW_WIDTH / 2) - 100, "Final score: " + score, sf::Color::Yellow);
 	sf::Time dt;
 	bool spacePressed = false;
 	bool playPressed = false;
@@ -125,6 +126,8 @@ int main()
 		if (gameOver) {
 			window.clear();
 			gameOverMenu.draw(window);
+			finalScore.setString("Final score: " + to_string(gameWindow.getPoints()));
+			window.draw(finalScore);
 		}
 		else if (playPressed) {
 			window.clear();
